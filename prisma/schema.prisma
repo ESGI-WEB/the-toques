@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  firstName String
+  password  String
+  role      Role     @default(USER)
+  recipes   Recipe[]
+  marks     Mark[]
+  favorites Recipe[] @relation("UserRecipesFavorites")
+}
+
+model Recipe {
+  id          Int      @id @default(autoincrement())
+  title       String
+  ingredients String
+  steps       String
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  marks       Mark[]
+  favorites   User[]   @relation("UserRecipesFavorites")
+}
+
+model Mark {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  title     String?
+  content   String?
+  mark      Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
