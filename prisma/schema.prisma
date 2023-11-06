@@ -24,16 +24,26 @@ model User {
 }
 
 model Recipe {
-  id          Int      @id @default(autoincrement())
+  id          Int                @id @default(autoincrement())
   title       String
-  ingredients String
+  ingredients RecipeIngredient[]
   steps       String
   authorId    Int
-  author      User     @relation(fields: [authorId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  author      User               @relation(fields: [authorId], references: [id])
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
   marks       Mark[]
-  favorites   User[]   @relation("UserRecipesFavorites")
+  favorites   User[]             @relation("UserRecipesFavorites")
+}
+
+model RecipeIngredient {
+  id        Int      @id @default(autoincrement())
+  recipeId  Int
+  recipe    Recipe   @relation(fields: [recipeId], references: [id])
+  name      String
+  quantity  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Mark {
