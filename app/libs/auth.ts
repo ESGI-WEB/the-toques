@@ -2,7 +2,7 @@ import {jwtVerify} from "jose";
 import {PrismaClient, User} from "@prisma/client";
 
 export function getJwtSecretKey() {
-    const secret = process.env.NEXT_PUBLIC_JWT_SECRET_KEY;
+    const secret = process.env.JWT_SECRET_KEY;
     if (!secret) {
         throw new Error("JWT Secret key is not matched");
     }
@@ -23,7 +23,7 @@ export function encryptPassword(password: string): any {
     return bcrypt.hashSync(password, 10);
 }
 
-export async function isAuthenticated(request: Request) {
+export async function isAuthenticated(request: Request): Promise<false|UserPayload> {
     const authorization = request.headers.get("authorization");
     if (!authorization) {
         return false;
@@ -32,11 +32,11 @@ export async function isAuthenticated(request: Request) {
     if (type !== "Bearer") {
         return false;
     }
-    return await verifyJwtToken(token);
+    return (await verifyJwtToken(token)) as unknown as UserPayload;
 }
 
-export async function isAdmin(request: any) {
-    const payload = (await isAuthenticated(request)) as unknown as UserPayload;
+export async function isAdmin(request: any): Promise<false|UserPayload> {
+    const payload = await isAuthenticated(request);
     if (!payload) {
         return false;
     }
@@ -50,7 +50,11 @@ export async function isAdmin(request: any) {
         return false;
     }
 
-    return user.role === "ADMIN";
+    if (user.role !== "ADMIN") {
+        return false;
+    }
+
+    return payload;
 }
 
 export interface UserPayload {

@@ -27,7 +27,7 @@ model Recipe {
   id          Int                @id @default(autoincrement())
   title       String
   ingredients RecipeIngredient[]
-  steps       String
+  steps       RecipeStep[]
   authorId    Int
   author      User               @relation(fields: [authorId], references: [id])
   createdAt   DateTime           @default(now())
@@ -44,6 +44,16 @@ model RecipeIngredient {
   quantity  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model RecipeStep {
+  id          Int      @id @default(autoincrement())
+  recipeId    Int
+  recipe      Recipe   @relation(fields: [recipeId], references: [id])
+  name        String
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Mark {
