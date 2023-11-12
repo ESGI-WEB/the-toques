@@ -2,9 +2,15 @@ import {SignJWT} from "jose";
 import {NextResponse} from "next/server";
 import {getJwtSecretKey} from "@/app/libs/auth";
 import {PrismaClient} from "@prisma/client";
+import {loginSchema} from "@/app/libs/users/validators";
 
 export async function POST(request: Request) {
-    const {email, password} = await request.json();
+    const {value, error} = loginSchema.validate(await request.json());
+    if (error) {
+        return NextResponse.json({error: error.details}, {status: 422});
+    }
+    const {email, password} = value;
+
     const prisma = new PrismaClient();
     const bcrypt = require("bcrypt");
 

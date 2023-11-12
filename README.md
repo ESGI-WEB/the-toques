@@ -62,3 +62,5 @@ To create a migration without updating database, run:
 docker exec the-toques-next-1 npx prisma migrate dev --name <fill_migration_name> --create-only
 ```
 
+## MUI
+For the UI, this project uses [Material UI](https://mui.com/).

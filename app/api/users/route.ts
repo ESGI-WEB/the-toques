@@ -1,29 +1,23 @@
 import {NextResponse} from "next/server";
 import {PrismaClient} from "@prisma/client";
-import {encryptPassword, isAdmin, isAuthenticated} from "@/app/libs/auth";
+import {encryptPassword, isAdmin} from "@/app/libs/auth";
+import {createUserSchema} from "@/app/libs/users/validators";
 
 export async function POST(request: Request) {
+    const {value, error} = createUserSchema.validate(await request.json());
+    if (error) {
+        return NextResponse.json({error: error.details}, {status: 422});
+    }
+
     const {
-        email = null,
-        firstName = null,
-        password = null,
-    } = await request.json();
-
-    if (!email || !firstName || !password) {
-        return NextResponse.json({}, {status: 422});
-    }
-
-    const passwordRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})");
-    if (!passwordRegex.test(password)) {
-        return NextResponse.json({
-            error: 'Password must contains at least an uppercase, a lowercase and a number and be a minimum of 8 caracters'},
-            {status: 422}
-        );
-    }
+        email,
+        firstName,
+        password,
+    } = value;
 
     const prisma = new PrismaClient();
 
-    if (prisma.user.findUnique({where: {email}}) !== null) {
+    if (await prisma.user.findUnique({where: {email}}) !== null) {
         return NextResponse.json({error: 'Email already exists'}, {status: 422});
     }
 
