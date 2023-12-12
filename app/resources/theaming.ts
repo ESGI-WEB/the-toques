@@ -28,19 +28,16 @@ export const theme = createTheme({
         h1: {
             fontSize: '2rem',
             fontWeight: 700,
-            marginBottom: '1rem',
             color: '#333',
         },
         h2: {
             fontSize: '1.5rem',
             fontWeight: 700,
-            marginBottom: '1rem',
             color: '#333',
         },
         h3: {
             fontSize: '1.2rem',
             fontWeight: 700,
-            marginBottom: '0.5rem',
             color: '#333',
         },
         body1: {
@@ -59,4 +56,13 @@ export const theme = createTheme({
     shape: {
         borderRadius: 8,
     },
+    components: {
+        MuiRating: {
+            styleOverrides: {
+                root: {
+                    color: teal[500],
+                }
+            }
+        }
+    }
 });

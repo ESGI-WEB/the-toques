@@ -3,6 +3,7 @@ import {isAuthenticated} from "@/app/libs/auth";
 import {Prisma, PrismaClient} from "@prisma/client";
 import {createRecipeMarkSchema} from "@/app/libs/marks/validators";
 import {GETRecipeParams} from "@/app/api/recipes/[recipe_id]/route";
+import {userSelect} from "@/prisma/utils";
 
 export async function POST(request: Request, {params}: { params: GETRecipeParams }) {
     const user = await isAuthenticated(request);
@@ -33,6 +34,11 @@ export async function POST(request: Request, {params}: { params: GETRecipeParams
                 title,
                 content,
                 mark
+            },
+            include: {
+                user: {
+                    ...userSelect
+                }
             }
         });
 
@@ -62,9 +68,7 @@ export async function GET(request: Request, {params}: { params: GETRecipeParams 
         },
         include: {
             user: {
-                select: {
-                    firstName: true
-                }
+                ...userSelect
             }
         }
     })

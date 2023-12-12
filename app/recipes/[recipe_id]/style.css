@@ -1,0 +1,20 @@
+.recipe-page .ingredient-with-image {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.recipe-page .recipe-image {
+    width: 50%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.recipe-page .ingredient-list {
+    padding: 24px;
+    background-color: #f7f7f7;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}

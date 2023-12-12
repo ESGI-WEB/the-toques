@@ -6,7 +6,7 @@ import {Recipe} from "@/app/resources/models/recipe.model";
 import RecipeCard from "@/app/resources/components/RecipeCard";
 import Typography from "@mui/material/Typography";
 
-export default function Home() {
+export default function Recipes() {
     const api = useApi();
     const [recipes, setRecipes] = useState<Recipe[]>([])
 
@@ -15,8 +15,8 @@ export default function Home() {
     }, []);
 
     return (
-        <div>
-            <Typography variant="h1" gutterBottom>
+        <>
+            <Typography variant="h4" component="h3" gutterBottom>
                 Nos recettes
             </Typography>
             <div className="flex p-24 gap-30 flex-wrap">
@@ -24,6 +24,6 @@ export default function Home() {
                     <RecipeCard key={recipe.id} recipe={recipe}/>
                 ))}
             </div>
-        </div>
+        </>
     )
 }

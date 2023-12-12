@@ -1,5 +1,5 @@
-import {getToken} from "../components/AuthCheck";
 import {redirect} from "next/navigation";
+import {getToken} from "@/app/resources/services/authService";
 
 export const useApi = () => {
     const token = getToken() || null;
@@ -21,6 +21,9 @@ export const useApi = () => {
 
         return fetch(`/api/${url}`, {...options, headers}).then(response => {
             if (response.ok) {
+                if (response.status === 204) {
+                    return;
+                }
                 return response.json();
             }
 

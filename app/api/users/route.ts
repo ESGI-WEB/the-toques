@@ -2,6 +2,7 @@ import {NextResponse} from "next/server";
 import {PrismaClient} from "@prisma/client";
 import {encryptPassword, isAdmin} from "@/app/libs/auth";
 import {createUserSchema} from "@/app/libs/users/validators";
+import {userSelectProtected} from "@/prisma/utils";
 
 export async function POST(request: Request) {
     const {value, error} = createUserSchema.validate(await request.json());
@@ -39,12 +40,7 @@ export async function GET(request: Request) {
 
     const prisma = new PrismaClient();
     const users = await prisma.user.findMany({
-        select: {
-            id: true,
-            email: true,
-            firstName: true,
-            role: true,
-        },
+        ...userSelectProtected
     });
 
     return NextResponse.json(users, {status: 200});

@@ -2,6 +2,8 @@ import {NextResponse} from "next/server";
 import {isAuthenticated} from "@/app/libs/auth";
 import {Prisma, PrismaClient} from "@prisma/client";
 import {createRecipeSchema} from "@/app/libs/recipes/validators";
+import fs from "fs";
+import {getRecipesWithAvg, getRecipesWithIsLiked} from "@/prisma/utils";
 
 export async function POST(request: Request) {
     const user = await isAuthenticated(request);
@@ -17,7 +19,14 @@ export async function POST(request: Request) {
     }
 
     try {
-        const {title, steps, ingredients} = value;
+        const {title, steps, ingredients, image} = value;
+
+        const imageBase64 = image.split(",")[1];
+        const imageBuffer = Buffer.from(imageBase64, "base64");
+        const imageName = `/storage/${Date.now()}-${Math.random() * 10000}.png`;
+        const imagePath = `public${imageName}`;
+        fs.writeFileSync(imagePath, imageBuffer);
+
         const recipe = await prisma.recipe.create({
             data: {
                 title,
@@ -28,6 +37,7 @@ export async function POST(request: Request) {
                 steps: {
                     create: steps,
                 },
+                image: imageName,
             },
             include: {
                 ingredients: true,
@@ -45,18 +55,17 @@ export async function POST(request: Request) {
     }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
     const prisma = new PrismaClient();
-    const recipes = await prisma.recipe.findMany({
-        include: {
-            ingredients: true,
-            steps: true,
-            author: {
-                select: {
-                    firstName: true,
-                }
-            }
-        }
-    });
+
+    let recipes = await prisma.recipe.findMany();
+
+    recipes = await getRecipesWithAvg(recipes, prisma);
+
+    const user = await isAuthenticated(request);
+    if (user) {
+        recipes = await getRecipesWithIsLiked(recipes, prisma, user.id)
+    }
+
     return NextResponse.json(recipes, {status: 200});
 }

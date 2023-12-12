@@ -2,7 +2,8 @@ import Joi from "joi";
 
 export const createRecipeSchema = Joi.object({
     title: Joi.string().required().min(5).max(255),
-    // picture: Joi.string().required().,
+    image: Joi.string().regex(/^data:image\/(png|jpeg|jpg);base64,/).required(),
+    plates: Joi.number().required().min(1),
     ingredients: Joi.array()
         .items(
             Joi.object({

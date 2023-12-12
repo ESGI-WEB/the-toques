@@ -12,10 +12,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import {ThemeProvider} from '@mui/material/styles';
 import {theme} from "@/app/resources/theaming";
-import {setToken} from "@/app/resources/components/AuthCheck";
 import {useApi} from "@/app/resources/services/useApi";
 import {useState} from "react";
 import {Alert} from "@mui/material";
+import {setToken} from "@/app/resources/services/authService";
+import NotAuthCheck from "@/app/resources/components/Auth/NoAuthCheck";
 
 export default function Register() {
     const api = useApi();
@@ -52,7 +53,7 @@ export default function Register() {
     };
 
     return (
-        <ThemeProvider theme={theme}>
+        <NotAuthCheck>
             {error?.length > 0 && <Alert severity="error">{error}</Alert>}
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
@@ -68,7 +69,7 @@ export default function Register() {
                         <LockOutlinedIcon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign up
+                        Inscription
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{mt: 3}}>
                         <Grid container spacing={2}>
@@ -79,7 +80,7 @@ export default function Register() {
                                     required
                                     fullWidth
                                     id="firstName"
-                                    label="First Name"
+                                    label="Prénom"
                                     autoFocus
                                 />
                             </Grid>
@@ -88,7 +89,7 @@ export default function Register() {
                                     required
                                     fullWidth
                                     id="email"
-                                    label="Email Address"
+                                    label="Adresse mail"
                                     name="email"
                                     autoComplete="email"
                                     type="email"
@@ -99,7 +100,7 @@ export default function Register() {
                                     required
                                     fullWidth
                                     name="password"
-                                    label="Password"
+                                    label="Mot de passe"
                                     type="password"
                                     id="password"
                                     autoComplete="new-password"
@@ -112,18 +113,18 @@ export default function Register() {
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
                         >
-                            Sign Up
+                            Inscription
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="/login" variant="body2">
-                                    Already have an account? Sign in
+                                    Vous avez déjà un compte ? Connectez-vous
                                 </Link>
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
             </Container>
-        </ThemeProvider>
+        </NotAuthCheck>
     );
 }

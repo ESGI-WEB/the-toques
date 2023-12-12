@@ -1,10 +1,8 @@
-"use client";
-import { useEffect } from 'react';
-import {redirect} from "next/navigation";
 import {jwtDecode} from "jwt-decode";
+import {redirect} from "next/navigation";
 
 export interface JWTToken {
-    id: string;
+    id: number;
     email: string;
     firstName: string;
     role: string;
@@ -40,22 +38,6 @@ export const setToken = (token: string) => {
 
 export const removeToken = () => {
     localStorage.removeItem('token');
-    redirect('/');
+    // refresh the page
+    window.location.reload();
 }
-
-const AuthCheck = ({ children, roles = [] }: { children: any, roles?: string[] }) => {
-    useEffect(() => {
-        const token = decodeToken();
-        if (!token) {
-            redirect('/login');
-        }
-
-        if (roles.length > 0 && !roles.includes(token.role)) {
-            redirect('/login');
-        }
-    }, []);
-
-    return children;
-};
-
-export default AuthCheck;

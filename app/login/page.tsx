@@ -13,9 +13,10 @@ import Container from '@mui/material/Container';
 import {theme} from "@/app/resources/theaming";
 import {ThemeProvider} from "@mui/system";
 import {useApi} from "@/app/resources/services/useApi";
-import {setToken} from "@/app/resources/components/AuthCheck";
 import {useState} from "react";
 import {Alert} from "@mui/material";
+import {setToken} from "@/app/resources/services/authService";
+import NotAuthCheck from "@/app/resources/components/Auth/NoAuthCheck";
 
 export default function Login() {
     const api = useApi();
@@ -47,7 +48,7 @@ export default function Login() {
     };
 
     return (
-        <ThemeProvider theme={theme}>
+        <NotAuthCheck>
             {showError && <Alert severity="error">Mail et/ou mot de passe invalides</Alert>}
             <Container component="main" maxWidth="xs">
                 <CssBaseline/>
@@ -63,7 +64,7 @@ export default function Login() {
                         <LockOutlinedIcon/>
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Connexion
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                         <TextField
@@ -71,7 +72,7 @@ export default function Login() {
                             required
                             fullWidth
                             id="email"
-                            label="Email Address"
+                            label="Adresse mail"
                             name="email"
                             autoFocus
                         />
@@ -80,7 +81,7 @@ export default function Login() {
                             required
                             fullWidth
                             name="password"
-                            label="Password"
+                            label="Mot de passe"
                             type="password"
                             id="password"
                         />
@@ -90,18 +91,18 @@ export default function Login() {
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
                         >
-                            Sign In
+                            Connexion
                         </Button>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="/register" variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                    Vous n'avez pas de compte ? Inscrivez-vous
                                 </Link>
                             </Grid>
                         </Grid>
                     </Box>
                 </Box>
             </Container>
-        </ThemeProvider>
+        </NotAuthCheck>
     );
 }
