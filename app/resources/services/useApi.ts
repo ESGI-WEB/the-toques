@@ -1,8 +1,9 @@
-import {redirect} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 import {getToken} from "@/app/resources/services/authService";
 
 export const useApi = () => {
     const token = getToken() || null;
+    const router = useRouter();
 
     return (url: any, options: any = {}) => {
         const headers = {
@@ -29,7 +30,7 @@ export const useApi = () => {
 
             // need to authenticate, redirect to login page
             if (response.status === 401) {
-                redirect('/login');
+                router.push('/login');
                 return;
             }
 

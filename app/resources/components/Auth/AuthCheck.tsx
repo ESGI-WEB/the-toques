@@ -2,19 +2,20 @@
 
 import {decodeToken} from "@/app/resources/services/authService";
 import {useEffect, useState} from "react";
-import {redirect} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 
 export default function AuthCheck ({ children, roles = [] }: { children: any, roles?: string[] }) {
     const [hasVerified, setHasVerified] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         const token = decodeToken();
         if (!token) {
-            redirect('/login');
+            router.push('/login');
         }
 
         if (roles.length > 0 && !roles.includes(token.role)) {
-            redirect('/login');
+            router.push('/login');
         }
 
         setHasVerified(true);

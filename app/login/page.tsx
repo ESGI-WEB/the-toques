@@ -17,10 +17,12 @@ import {useState} from "react";
 import {Alert} from "@mui/material";
 import {setToken} from "@/app/resources/services/authService";
 import NotAuthCheck from "@/app/resources/components/Auth/NoAuthCheck";
+import {useRouter} from "next/navigation";
 
 export default function Login() {
     const api = useApi();
     const [showError, setShowError] = useState(false);
+    const router = useRouter();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -40,7 +42,7 @@ export default function Login() {
             body: JSON.stringify({email, password}),
         }).then((res) => {
             setToken(res.token);
-            window.location.href = '/profile'; // why redirect('/profile') doesn't work?
+            router.push('/profile');
         }).catch((err) => {
             setShowError(true);
             console.error(err);

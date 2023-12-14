@@ -17,10 +17,13 @@ import {useState} from "react";
 import {Alert} from "@mui/material";
 import {setToken} from "@/app/resources/services/authService";
 import NotAuthCheck from "@/app/resources/components/Auth/NoAuthCheck";
+import {router} from "next/client";
+import {useRouter} from "next/navigation";
 
 export default function Register() {
     const api = useApi();
     const [error, setError] = useState<string>('');
+    const router = useRouter();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -44,7 +47,7 @@ export default function Register() {
             }),
         }).then((res) => {
             setToken(res.token);
-            window.location.href = '/login'; // why redirect('/profile') doesn't work?
+            router.push('/login');
         }).catch((err) => {
             setError(err.error[0].message || 'formulaire invalide');
             console.error(err);

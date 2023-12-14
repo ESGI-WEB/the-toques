@@ -16,16 +16,18 @@ import {decodeToken, JWTToken, removeToken} from "@/app/resources/services/authS
 import {useEffect, useState} from "react";
 import {FavoriteRounded} from "@mui/icons-material";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import {useRouter} from "next/navigation";
 
 export default function Header() {
     const [menuOpened, setMenuOpened] = useState(false);
     const [tokenData, setTokenData] = useState<JWTToken|false>(false);
+    const router = useRouter();
 
     const allMenuItems: MenuItem[] = [
         {text: 'Accueil', link: '/', icon: <HomeIcon/>},
         {text: 'Connexion', link: '/login', role: 'not-logged', icon: <PersonIcon/>},
         {text: 'Profil', link: '/profile', role: USER_ROLES.USER, icon: <PersonIcon/>},
-        {text: 'Favoris', link: 'profile/favorites', role: USER_ROLES.USER, icon: <FavoriteRounded/>},
+        {text: 'Favoris', link: '/profile/favorites', role: USER_ROLES.USER, icon: <FavoriteRounded/>},
         {text: 'Vos recettes', link: '/profile/recipes', role: USER_ROLES.USER, icon: <LocalDiningIcon/>},
         {text: 'Ajouter une recette', link: '/recipes/create', role: USER_ROLES.USER, icon: <AddCircleOutlineIcon/>},
 
@@ -45,6 +47,11 @@ export default function Header() {
         }
         return false;
     });
+
+    const handleMenuClick = async (item: MenuItem) => {
+        await router.push(item.link);
+        setMenuOpened(false);
+    }
 
     useEffect(() => {
         setTokenData(decodeToken());
@@ -80,7 +87,7 @@ export default function Header() {
                         <List>
                             {menuItems.map(item => (
                                 <ListItem key={item.link} disablePadding>
-                                    <ListItemButton href={item.link}>
+                                    <ListItemButton onClick={() => handleMenuClick(item)}>
                                         <ListItemIcon>
                                             {item.icon}
                                         </ListItemIcon>
