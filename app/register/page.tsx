@@ -19,11 +19,13 @@ import {setToken} from "@/app/resources/services/authService";
 import NotAuthCheck from "@/app/resources/components/Auth/NoAuthCheck";
 import {router} from "next/client";
 import {useRouter} from "next/navigation";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 export default function Register() {
     const api = useApi();
     const [error, setError] = useState<string>('');
     const router = useRouter();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -38,6 +40,7 @@ export default function Register() {
             return;
         }
 
+        setLoading(true);
         api('users', {
             method: 'POST',
             body: JSON.stringify({
@@ -51,8 +54,9 @@ export default function Register() {
         }).catch((err) => {
             setError(err.error[0].message || 'formulaire invalide');
             console.error(err);
-        })
-
+        }).finally(() => {
+            setLoading(false);
+        });
     };
 
     return (
@@ -110,14 +114,15 @@ export default function Register() {
                                 />
                             </Grid>
                         </Grid>
-                        <Button
+                        <LoadingButton
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
+                            loading={loading}
                         >
                             Inscription
-                        </Button>
+                        </LoadingButton>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="/login" variant="body2">

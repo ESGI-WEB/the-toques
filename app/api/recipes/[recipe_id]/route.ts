@@ -32,6 +32,7 @@ export async function GET(request: Request, {params}: { params: GETRecipeParams 
     }) as any;
 
     if (!recipe) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 404});
     }
 
@@ -42,6 +43,7 @@ export async function GET(request: Request, {params}: { params: GETRecipeParams 
         recipe = await getRecipeWithIsLiked(recipe, prisma, user.id);
     }
 
+    await prisma.$disconnect();
     return NextResponse.json(recipe, {status: 200});
 }
 
@@ -61,10 +63,12 @@ export async function DELETE(request: Request, {params}: { params: { recipe_id: 
     });
 
     if (!recipe) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 404});
     }
 
     if (recipe.authorId !== user.id) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 403});
     }
 
@@ -97,5 +101,6 @@ export async function DELETE(request: Request, {params}: { params: { recipe_id: 
         }),
     ]);
 
+    await prisma.$disconnect();
     return new Response(null, {status: 204});
 }

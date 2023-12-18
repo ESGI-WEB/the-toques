@@ -1,6 +1,6 @@
 "use client";
 
-import {decodeToken} from "@/app/resources/services/authService";
+import {decodeToken, JWTToken} from "@/app/resources/services/authService";
 import {useEffect, useState} from "react";
 import {redirect, useRouter} from "next/navigation";
 
@@ -14,7 +14,8 @@ export default function AuthCheck ({ children, roles = [] }: { children: any, ro
             router.push('/login');
         }
 
-        if (roles.length > 0 && !roles.includes(token.role)) {
+        const securedToken = token as JWTToken;
+        if (roles.length > 0 && !roles.includes(securedToken.role)) {
             router.push('/login');
         }
 

@@ -19,5 +19,6 @@ export async function GET(request: Request) {
 
     recipes = await getRecipesWithAvg(recipes, prisma);
     recipes = await getRecipesWithIsLiked(recipes, prisma, user.id);
+    await prisma.$disconnect();
     return NextResponse.json(recipes, {status: 200});
 }

@@ -1,25 +1,12 @@
-import Modal from '@mui/material/Modal';
-import {Fab, Typography} from "@mui/material";
+import {Fab} from "@mui/material";
 import {ChatOutlined} from "@mui/icons-material";
-import Box from "@mui/material/Box";
-import {useState} from "react";
+import React, {useState} from "react";
 import {useApi} from "@/app/resources/services/useApi";
 import TextField from "@mui/material/TextField";
 import LoadingButton from "@mui/lab/LoadingButton";
 import BotMessage from "@/app/resources/components/BotMessage";
 import {IChatMessage} from "@/app/resources/models/message";
-
-const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: '80%',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    borderRadius: '8px',
-    p: 4,
-};
+import CenteredModal from "@/app/resources/components/CenteredModal";
 
 export default function ChatBot() {
     const api = useApi();
@@ -29,8 +16,9 @@ export default function ChatBot() {
     const handleClose = () => setOpen(false);
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState<IChatMessage[]>([
-        {content: "Bonjour, je suis Edouard CERRA, comment puis-je vous aider ?", role: 'assistant'}
+        {content: "Bonjour, je suis Jean Bon, comment puis-je vous aider ?", role: 'assistant'}
     ] as IChatMessage[]);
+    const [error, setError] = useState<string | null>(null);
 
     function addMessage(message: IChatMessage) {
         setMessages(messages => [...messages, message])
@@ -50,17 +38,21 @@ export default function ChatBot() {
         }
     }
 
-    const send = () => {
+    const send = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
         const message = input;
 
         if (!message || !message.trim()) {
-            // addMessage({content: 'Tout-dabord, écrivez un message'}); // TODO
-            return
+            setError('Tout-dabord, écrivez un message');
+            return;
         }
 
         setInput('');
+        setError(null);
         addMessage({content: input, role: 'user'});
         setIsLoading(true);
+        scrollModalToBottom();
 
         api('bot', {
             method: 'POST',
@@ -70,11 +62,18 @@ export default function ChatBot() {
             body: JSON.stringify({message, messages})
         }).then((message: IChatMessage) => {
             addMessage(message);
+            scrollModalToBottom();
         }).catch(() => {
-            // addMessage({content: 'Une erreur est survenue', role: 'error'});
+            setError('Une erreur est survenue');
         }).finally(() => {
             setIsLoading(false);
         });
+    }
+
+    const scrollModalToBottom = () => {
+        const modal = document.querySelector('.modal-container');
+        if (!modal) return;
+        setTimeout(() => modal.scrollTo(0, modal.scrollHeight), 1); // after render
     }
 
     return (
@@ -82,38 +81,37 @@ export default function ChatBot() {
             <Fab color="primary" onClick={handleOpen}>
                 <ChatOutlined />
             </Fab>
-            <Modal
+            <CenteredModal
                 open={open}
                 onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
             >
-                <Box sx={style}>
-                    <div>
-                        {messages.map((message, index) => (
-                            <BotMessage message={message} key={index} variant={getMessageVariant(message)}>
-                                {message.content}
-                            </BotMessage>
-                        ))}
-                    </div>
-                    <div className="flex">
-                        <TextField
-                            label="Message"
-                            variant="outlined"
-                            value={input}
-                            onChange={handleInput}
-                        />
-                        <LoadingButton
-                            loading={isLoading}
-                            onClick={send}
-                            variant="contained"
-                            color="primary"
-                        >
-                            Envoyer
-                        </LoadingButton>
-                    </div>
-                </Box>
-            </Modal>
+                <div>
+                    {messages.map((message, index) => (
+                        <BotMessage message={message} key={index} variant={getMessageVariant(message)}>
+                            {message.content}
+                        </BotMessage>
+                    ))}
+                </div>
+                <form className="flex gap-20 margin-top-40" onSubmit={(e) => send(e)}>
+                    <TextField
+                        label="Message"
+                        variant="outlined"
+                        value={input}
+                        onChange={handleInput}
+                        fullWidth
+                        error={!!error}
+                        helperText={error}
+                    />
+                    <LoadingButton
+                        loading={isLoading}
+                        variant="contained"
+                        color="primary"
+                        type='submit'
+                    >
+                        Envoyer
+                    </LoadingButton>
+                </form>
+            </CenteredModal>
         </div>
     )
 }

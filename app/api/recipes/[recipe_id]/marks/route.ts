@@ -22,6 +22,7 @@ export async function POST(request: Request, {params}: { params: GETRecipeParams
     if (!(await prisma.recipe.findUnique({
         where: {id: Number(recipe_id)}
     }))) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 404});
     }
 
@@ -42,12 +43,15 @@ export async function POST(request: Request, {params}: { params: GETRecipeParams
             }
         });
 
+        await prisma.$disconnect();
         return NextResponse.json(savedMark, {status: 200});
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            await prisma.$disconnect();
             return NextResponse.json({error: error.message}, {status: 422});
         }
         console.error(error);
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 500});
     }
 }
@@ -59,6 +63,7 @@ export async function GET(request: Request, {params}: { params: GETRecipeParams 
     if (!(await prisma.recipe.findUnique({
         where: {id: Number(recipe_id)}
     }))) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 404});
     }
 
@@ -73,5 +78,6 @@ export async function GET(request: Request, {params}: { params: GETRecipeParams 
         }
     })
 
+    await prisma.$disconnect();
     return NextResponse.json(marks ?? [], {status: 200});
 }

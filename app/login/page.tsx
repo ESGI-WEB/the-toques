@@ -18,11 +18,13 @@ import {Alert} from "@mui/material";
 import {setToken} from "@/app/resources/services/authService";
 import NotAuthCheck from "@/app/resources/components/Auth/NoAuthCheck";
 import {useRouter} from "next/navigation";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 export default function Login() {
     const api = useApi();
     const [showError, setShowError] = useState(false);
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -37,6 +39,8 @@ export default function Login() {
             return;
         }
 
+        setLoading(true);
+
         api('login', {
             method: 'POST',
             body: JSON.stringify({email, password}),
@@ -46,7 +50,9 @@ export default function Login() {
         }).catch((err) => {
             setShowError(true);
             console.error(err);
-        })
+        }).finally(() => {
+            setLoading(false);
+        });
     };
 
     return (
@@ -87,14 +93,15 @@ export default function Login() {
                             type="password"
                             id="password"
                         />
-                        <Button
+                        <LoadingButton
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
+                            loading={loading}
                         >
                             Connexion
-                        </Button>
+                        </LoadingButton>
                         <Grid container justifyContent="flex-end">
                             <Grid item>
                                 <Link href="/register" variant="body2">

@@ -19,6 +19,7 @@ export async function POST(request: Request) {
     const prisma = new PrismaClient();
 
     if (await prisma.user.findUnique({where: {email}}) !== null) {
+        await prisma.$disconnect();
         return NextResponse.json({error: 'Email already exists'}, {status: 422});
     }
 
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
         }
     });
 
+    await prisma.$disconnect();
     return NextResponse.json({}, {status: 200});
 }
 
@@ -43,6 +45,6 @@ export async function GET(request: Request) {
         ...userSelectProtected
     });
 
+    await prisma.$disconnect();
     return NextResponse.json(users, {status: 200});
-
 }

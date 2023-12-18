@@ -8,4 +8,6 @@ export interface User {
     firstName: string,
     role: string,
     email: string,
+    preferences: string,
+    _count?: any,
 }

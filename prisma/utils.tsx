@@ -1,5 +1,4 @@
 import {PrismaClient, Recipe} from '@prisma/client';
-import {isAuthenticated} from "@/app/libs/auth";
 
 export async function getRecipesWithAvg(recipes: Recipe[], prisma: PrismaClient) {
     return await Promise.all(recipes.map(async (recipe: Recipe) => {
@@ -60,5 +59,6 @@ export const userSelectProtected = {
         firstName: true,
         email: true,
         role: true,
+        preferences: true,
     }
 }

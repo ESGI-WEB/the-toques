@@ -126,6 +126,10 @@ body {
     margin-bottom: 40px;
 }
 
+.margin-auto {
+    margin: auto;
+}
+
 .full-width {
     width: 100%;
 }
@@ -222,4 +226,8 @@ body {
     flex-direction: column;
     text-align: center;
     padding: 10px;
+}
+
+.col-6 {
+    width: 50%;
 }

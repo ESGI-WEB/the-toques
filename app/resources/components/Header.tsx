@@ -57,6 +57,10 @@ export default function Header() {
         setTokenData(decodeToken());
     }, []);
 
+    useEffect(() => {
+        setTokenData(decodeToken());
+    }, [(decodeToken() as JWTToken)?.id]);
+
     return (
             <Box sx={{flexGrow: 1}}>
                 <AppBar position="static">
@@ -76,7 +80,7 @@ export default function Header() {
                         </Typography>
 
                         {tokenData ?
-                            <Button color="inherit" onClick={() => removeToken()}>Deconnexion</Button> :
+                            <Button color="inherit" onClick={() => removeToken()}>Déconnexion</Button> :
                             <Button color="inherit" href="/login">Connexion</Button>
                         }
                     </Toolbar>

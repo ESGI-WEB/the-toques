@@ -21,6 +21,7 @@ export async function POST(request: Request) {
     });
 
     if (!user) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 401});
     }
 
@@ -39,8 +40,9 @@ export async function POST(request: Request) {
         .setProtectedHeader({alg: "HS256"})
         .sign(getJwtSecretKey());
 
+    await prisma.$disconnect();
     return NextResponse.json(
         {token},
-        {status: 200, headers: {"content-type": "application/json"}}
+        {status: 200}
     );
 }

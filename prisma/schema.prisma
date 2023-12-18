@@ -13,15 +13,16 @@ enum Role {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  firstName String
-  password  String
-  role      Role     @default(USER)
-  recipes   Recipe[]
-  marks     Mark[]
-  favorites Recipe[] @relation("UserRecipesFavorites")
-  likes     Like[]
+  id          Int      @id @default(autoincrement())
+  preferences String?  @db.Text
+  email       String   @unique
+  firstName   String
+  password    String
+  role        Role     @default(USER)
+  recipes     Recipe[]
+  marks       Mark[]
+  favorites   Recipe[] @relation("UserRecipesFavorites")
+  likes       Like[]
 }
 
 model Recipe {

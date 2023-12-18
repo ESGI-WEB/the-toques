@@ -15,6 +15,7 @@ export async function POST(request: Request) {
 
     const {value, error} = createRecipeSchema.validate(await request.json());
     if (error) {
+        await prisma.$disconnect();
         return NextResponse.json({error: error.details}, {status: 422});
     }
 
@@ -37,7 +38,7 @@ export async function POST(request: Request) {
                 steps: {
                     create: steps,
                 },
-                image: imageName,
+                image: 'imageName',
             },
             include: {
                 ingredients: true,
@@ -45,12 +46,15 @@ export async function POST(request: Request) {
             }
         });
 
+        await prisma.$disconnect();
         return NextResponse.json(recipe, {status: 200});
     } catch (error) {
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            await prisma.$disconnect();
             return NextResponse.json({error: error.message}, {status: 422});
         }
         console.error(error);
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 500});
     }
 }
@@ -67,5 +71,6 @@ export async function GET(request: Request) {
         recipes = await getRecipesWithIsLiked(recipes, prisma, user.id)
     }
 
+    await prisma.$disconnect();
     return NextResponse.json(recipes, {status: 200});
 }

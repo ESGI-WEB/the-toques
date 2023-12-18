@@ -15,11 +15,13 @@ import MarkCard from "@/app/resources/components/MarkCard";
 import MarkForm from "@/app/resources/components/MarkForm";
 import RecipeLike from "@/app/resources/components/RecipeLike";
 import RecipeDelete from "@/app/resources/components/RecipeDelete";
+import RecipeCard from "@/app/resources/components/RecipeCard";
 
 export default function Recipe() {
     const params = useParams();
     const recipeId = +params.recipe_id;
     const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [recommendations, setRecommendations] = useState<Recipe[]|null>(null);
     const [marksWithText, setMarksWithText] = useState<Mark[]>([])
     const api = useApi();
 
@@ -30,6 +32,7 @@ export default function Recipe() {
 
     useEffect(() => {
         api('recipes/' + recipeId).then(setUpRecipe);
+        api('recipes/' + recipeId + '/recommendations').then(setRecommendations);
     }, []);
 
     if (!recipe) {
@@ -70,6 +73,19 @@ export default function Recipe() {
                             <Typography variant="h6">Etape n°{index + 1} : {step.name}</Typography>
                             <Typography>{step.description}</Typography>
                         </div>
+                    ))}
+                </div>
+            </div>
+
+            <div>
+                <Typography variant="h2" gutterBottom>Recommendations similaires</Typography>
+                {recommendations === null && <div className="flex flex-center gap-20 flex-column">
+                    <CircularProgress/>
+                    <Typography>Nous recherchons les meilleurs recettes correspondantes</Typography>
+                </div>}
+                <div className="flex flex-wrap gap-20">
+                    {recommendations?.map(recommendation => (
+                        <RecipeCard recipe={recommendation} key={recommendation.id}/>
                     ))}
                 </div>
             </div>

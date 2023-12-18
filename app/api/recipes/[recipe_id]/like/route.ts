@@ -9,6 +9,7 @@ export async function POST(request: Request, {params}: { params: GETRecipeParams
 
     const user = await isAuthenticated(request);
     if (!user) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 401});
     }
 
@@ -21,6 +22,7 @@ export async function POST(request: Request, {params}: { params: GETRecipeParams
     });
 
     if (like) {
+        await prisma.$disconnect();
         return NextResponse.json({message: 'recipe already liked'}, {status: 403});
     }
 
@@ -31,6 +33,7 @@ export async function POST(request: Request, {params}: { params: GETRecipeParams
         }
     });
 
+    await prisma.$disconnect();
     return NextResponse.json(savedLike, {status: 200});
 }
 
@@ -40,6 +43,7 @@ export async function DELETE(request: Request, {params}: { params: GETRecipePara
 
     const user = await isAuthenticated(request);
     if (!user) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 401});
     }
 
@@ -51,6 +55,7 @@ export async function DELETE(request: Request, {params}: { params: GETRecipePara
     });
 
     if (!like) {
+        await prisma.$disconnect();
         return NextResponse.json({message: 'recipe not liked'}, {status: 403});
     }
 
@@ -60,5 +65,6 @@ export async function DELETE(request: Request, {params}: { params: GETRecipePara
         }
     });
 
+    await prisma.$disconnect();
     return new Response(null, {status: 204});
 }
