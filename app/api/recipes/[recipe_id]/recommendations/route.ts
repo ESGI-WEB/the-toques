@@ -74,8 +74,8 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
     } catch {}
 
     if (!recipeIds || !Array.isArray(recipeIds)) {
-        // fallback to 4 first selected recipes without GPT
-        recipeIds = similarRecipes.slice(0, 4).map(recipe => recipe.id);
+        await prisma.$disconnect();
+        return new NextResponse(JSON.stringify([]), {status: 200});
     }
 
     let recipesSelected = [];

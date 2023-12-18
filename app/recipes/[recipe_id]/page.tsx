@@ -16,6 +16,7 @@ import MarkForm from "@/app/resources/components/MarkForm";
 import RecipeLike from "@/app/resources/components/RecipeLike";
 import RecipeDelete from "@/app/resources/components/RecipeDelete";
 import RecipeCard from "@/app/resources/components/RecipeCard";
+import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 
 export default function Recipe() {
     const params = useParams();
@@ -83,6 +84,9 @@ export default function Recipe() {
                     <CircularProgress/>
                     <Typography>Nous recherchons les meilleurs recettes correspondantes</Typography>
                 </div>}
+                {recommendations !== null && recommendations.length === 0 &&
+                    <Typography>Aucune recette correspondante <SentimentDissatisfiedIcon/></Typography>
+                }
                 <div className="flex flex-wrap gap-20">
                     {recommendations?.map(recommendation => (
                         <RecipeCard recipe={recommendation} key={recommendation.id}/>
