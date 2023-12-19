@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {UploadOutlined} from "@mui/icons-material";
+import Image from "next/image";
 
 export default function Upload({
     onFileChange = (file: File) => void 0,
@@ -23,7 +24,7 @@ export default function Upload({
                 className="image-upload-input"
             />
             {selectedFile ? (
-                <img className="image-upload-label" src={URL.createObjectURL(selectedFile)} alt="preview"/>
+                <Image className="image-upload-label" src={URL.createObjectURL(selectedFile)} alt="preview"/>
             ) : (
                 <div className="upload-drag">
                     <p>Image de la recette</p>

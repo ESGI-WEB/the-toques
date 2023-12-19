@@ -39,7 +39,7 @@ export default function FavoritesPage() {
             </div>
             {!loading && !recipes?.length &&
                 <div>
-                    <Typography variant="body1">Vous n'avez pas encore créé de recettes</Typography>
+                    <Typography variant="body1">Vous n&apos;avez pas encore créé de recettes</Typography>
                     <Button variant="contained" href="/recipes/create">Créer une recette</Button>
                 </div>
             }

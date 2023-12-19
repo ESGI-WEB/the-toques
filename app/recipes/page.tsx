@@ -45,7 +45,7 @@ export default function Recipes() {
             <div className="flex p-24 gap-30 flex-wrap">
                 {recipes === null && <div className="flex flex-center gap-20 flex-column">
                     <CircularProgress/>
-                    <Typography>Qu'allez vous cuisiner aujourd'hui ? Vous allez très vite le savoir</Typography>
+                    <Typography>Qu&apos;allez vous cuisiner aujourd&apos;hui ? Vous allez très vite le savoir</Typography>
                 </div>}
                 {recipes !== null && recipes.map(recipe => (
                     <RecipeCard key={recipe.id} recipe={recipe}/>

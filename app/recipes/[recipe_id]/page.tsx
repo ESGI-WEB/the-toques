@@ -17,6 +17,7 @@ import RecipeLike from "@/app/resources/components/RecipeLike";
 import RecipeDelete from "@/app/resources/components/RecipeDelete";
 import RecipeCard from "@/app/resources/components/RecipeCard";
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
+import Image from "next/image";
 
 export default function Recipe() {
     const params = useParams();
@@ -60,7 +61,7 @@ export default function Recipe() {
                 </div>
             </div>
             <div className='ingredient-with-image'>
-                <img className="recipe-image" src={recipe.image} alt={recipe.title}/>
+                <Image className="recipe-image" src={recipe.image} alt={recipe.title}/>
                 <div className='ingredient-list'>
                     <Typography variant="h2">Ingredients</Typography>
                     <IngredientList recipe={recipe}/>
@@ -78,7 +79,7 @@ export default function Recipe() {
                         </div>
                     ))}
                     <div>
-                        <Typography variant="h6">Recommandation d'accompagnement</Typography>
+                        <Typography variant="h6">Recommandation d&apos;accompagnement</Typography>
                         {sides === null && <div className="flex flex-center gap-20 flex-column">
                             <CircularProgress/>
                             <Typography>Nous recherchons les meilleurs accompagnements pour cette recette...</Typography>

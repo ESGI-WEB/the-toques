@@ -44,7 +44,7 @@ export default function FavoritesPage() {
                 ))}
             </div>
             {!loading && !recipes?.length &&
-                <Typography variant="body1">Vous n'avez pas encore de recettes favorites</Typography>}
+                <Typography variant="body1">Vous n&apos;avez pas encore de recettes favorites</Typography>}
         </AuthCheck>
     );
 }
