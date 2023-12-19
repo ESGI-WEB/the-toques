@@ -55,7 +55,6 @@ export async function GET(request: Request) {
 
     let recipeIds = []
     try {
-        console.log(completion.choices[0].message.content)
         recipeIds = JSON.parse(completion.choices[0].message.content ?? '');
     } catch {}
 
