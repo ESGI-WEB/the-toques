@@ -3,7 +3,7 @@ import {UploadOutlined} from "@mui/icons-material";
 import Image from "next/image";
 
 export default function Upload({
-    onFileChange = (file: File) => void 0,
+    onFileChange = (file: File) => null,
 })
 {
     const [selectedFile, setSelectedFile] = useState(null);
