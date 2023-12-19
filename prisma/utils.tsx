@@ -1,4 +1,24 @@
-import {PrismaClient, Recipe} from '@prisma/client';
+import {Prisma, PrismaClient, Recipe} from '@prisma/client';
+
+export async function getRecipesMoreLiked(prisma: PrismaClient, wheres: string[] = [], limit = 100): Promise<number[]> {
+    const wheresSql = wheres.length ?
+        Prisma.sql`WHERE ${Prisma.join(wheres, ' AND ')}` :
+        Prisma.empty;
+
+    return prisma.$queryRaw<{id: number}[]>(
+        Prisma.sql`
+            SELECT id
+            FROM Recipe
+            ${wheresSql}
+            ORDER BY (
+                SELECT AVG(mark)
+                FROM Mark
+                WHERE Mark.recipeId = Recipe.id
+            ) DESC
+            LIMIT ${limit};
+        `
+    ).then((recipes) => recipes.map((recipe) => recipe.id));
+}
 
 export async function getRecipesWithAvg(recipes: Recipe[], prisma: PrismaClient) {
     return await Promise.all(recipes.map(async (recipe: Recipe) => {

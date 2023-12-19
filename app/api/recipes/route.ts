@@ -38,7 +38,7 @@ export async function POST(request: Request) {
                 steps: {
                     create: steps,
                 },
-                image: 'imageName',
+                image: imageName,
             },
             include: {
                 ingredients: true,

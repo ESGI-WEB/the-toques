@@ -23,7 +23,7 @@ export async function POST(request: Request) {
             }
         });
         if (userDetails) {
-            systemMessage.content += "L'utilisateur avec lequel tu comminques s'apelle " + userDetails.firstName + "."
+            systemMessage.content += "L'utilisateur avec lequel tu communiques s'appelle " + userDetails.firstName + "."
             if (userDetails.preferences) {
                 systemMessage.content += "Voici les préférences alimentaires qu'il a renseigné sur le site : " + userDetails.preferences + ". Prends en compte ces préférences dans tes réponses."
             }

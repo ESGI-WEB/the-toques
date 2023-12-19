@@ -24,6 +24,7 @@ export default function Recipe() {
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [recommendations, setRecommendations] = useState<Recipe[]|null>(null);
     const [marksWithText, setMarksWithText] = useState<Mark[]>([])
+    const [sides, setSides] = useState<string[]|null>(null);
     const api = useApi();
 
     const setUpRecipe = (recipe: Recipe) => {
@@ -34,6 +35,7 @@ export default function Recipe() {
     useEffect(() => {
         api('recipes/' + recipeId).then(setUpRecipe);
         api('recipes/' + recipeId + '/recommendations').then(setRecommendations);
+        api('recipes/' + recipeId + '/sides').then(sides => setSides(sides.content.replace('\n', '<br>')));
     }, []);
 
     if (!recipe) {
@@ -75,6 +77,16 @@ export default function Recipe() {
                             <Typography>{step.description}</Typography>
                         </div>
                     ))}
+                    <div>
+                        <Typography variant="h6">Recommandation d'accompagnement</Typography>
+                        {sides === null && <div className="flex flex-center gap-20 flex-column">
+                            <CircularProgress/>
+                            <Typography>Nous recherchons les meilleurs accompagnements pour cette recette...</Typography>
+                        </div>}
+                        {sides !== null &&
+                            <Typography dangerouslySetInnerHTML={{__html: sides}}></Typography>
+                        }
+                    </div>
                 </div>
             </div>
 

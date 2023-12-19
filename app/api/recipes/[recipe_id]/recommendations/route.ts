@@ -19,6 +19,7 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
             ingredients: true,
         }
     });
+    const user = await isAuthenticated(request);
 
     if (!recipe) {
         await prisma.$disconnect();
@@ -57,10 +58,23 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
             `Choisis parmi les recettes suivantes celles qui sont le plus similaire à la recette précédente. ` +
             `Retourne les 4 plus similaires dans un tableau contenant uniquement la valeur du id en JSON. ` +
             `Si il y a moins de 4 recettes similaires, envoie en moins, s'il n'y en a pas, renvoi [].` +
-            `Voici la liste de recettes parmis lesquelles tu dois choisir les id. Le content de ta réponse doit uniquement contenir le tableau de la forme [number, number, ...]. ` +
+            `Voici la liste de recettes parmis lesquelles tu dois choisir les id. Le content de ta réponse doit uniquement contenir le tableau de la forme [number, number, ...]. `+
+            `Renvoi uniquement le tableau JSON des valeurs des ids avec les plus similaires en premier. ` +
             similarRecipes.map(recipe => `[id: ${recipe.id}, titre: ${recipe.title}, ingrédients: ${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}]`)
                 .join(', ')
     };
+
+    if (user) {
+        const userDetails = await prisma.user.findUnique({
+            where: {
+                id: user.id,
+            }
+        });
+        if (userDetails?.preferences) {
+            systemMessage.content += ". Voici les préférences alimentaires que l'utilisateur a renseigné sur le site : " + userDetails.preferences + ". Prends en compte ces préférences dans tes réponses si possible."
+        }
+    }
+
 
     const openai = new OpenAI();
     const completion = await openai.chat.completions.create({
@@ -82,13 +96,12 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
     recipesSelected = await prisma.recipe.findMany({
         where: {
             id: {
-                in: recipeIds,
+                in: recipeIds.map(id => parseInt(id)),
             }
         },
     });
 
     recipesSelected = await getRecipesWithAvg(recipesSelected, prisma);
-    const user = await isAuthenticated(request);
     if (user) {
         recipesSelected = await getRecipesWithIsLiked(recipesSelected, prisma, user.id);
     }
