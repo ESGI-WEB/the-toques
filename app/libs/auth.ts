@@ -58,7 +58,7 @@ export async function isAdmin(request: any): Promise<false|UserPayload> {
 }
 
 export interface UserPayload {
-    id: number;
+    id: bigint;
     email: string;
     firstName: string;
     role: string;
