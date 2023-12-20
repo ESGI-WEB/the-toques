@@ -15,12 +15,13 @@ export default function Search() {
     const api = useApi();
     const [recipes, setRecipes] = useState<Recipe[] | null>(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string|null>(null);
+    const [error, setError] = useState(false);
     const setUpRecipes = (recipes: Recipe[]) => {
         setRecipes(recipes);
     }
 
     useEffect(() => {
+        setError(false);
         setLoading(true);
         api(`search`, {
             method: 'POST',
