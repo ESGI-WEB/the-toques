@@ -13,7 +13,7 @@ enum Role {
 }
 
 model User {
-  id          BigInt   @id @default(autoincrement())
+  id          Int      @id @default(sequence())
   preferences String?  @db.String(2000)
   email       String   @unique
   firstName   String
@@ -26,13 +26,13 @@ model User {
 }
 
 model Recipe {
-  id          BigInt             @id @default(autoincrement())
+  id          Int                @id @default(sequence())
   title       String
   image       String
   plates      Int                @default(4)
   ingredients RecipeIngredient[]
   steps       RecipeStep[]
-  authorId    BigInt
+  authorId    Int
   author      User               @relation(fields: [authorId], references: [id])
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
@@ -42,8 +42,8 @@ model Recipe {
 }
 
 model RecipeIngredient {
-  id        BigInt   @id @default(autoincrement())
-  recipeId  BigInt
+  id        Int      @id @default(sequence())
+  recipeId  Int
   recipe    Recipe   @relation(fields: [recipeId], references: [id])
   name      String
   quantity  String
@@ -52,8 +52,8 @@ model RecipeIngredient {
 }
 
 model RecipeStep {
-  id          BigInt   @id @default(autoincrement())
-  recipeId    BigInt
+  id          Int      @id @default(sequence())
+  recipeId    Int
   recipe      Recipe   @relation(fields: [recipeId], references: [id])
   name        String
   description String   @db.String(2000)
@@ -62,10 +62,10 @@ model RecipeStep {
 }
 
 model Mark {
-  id        BigInt   @id @default(autoincrement())
-  recipeId  BigInt
+  id        Int      @id @default(sequence())
+  recipeId  Int
   recipe    Recipe   @relation(fields: [recipeId], references: [id])
-  userId    BigInt
+  userId    Int
   user      User     @relation(fields: [userId], references: [id])
   title     String?
   content   String?
@@ -75,10 +75,10 @@ model Mark {
 }
 
 model Like {
-  id        BigInt   @id @default(autoincrement())
-  recipeId  BigInt
+  id        Int      @id @default(sequence())
+  recipeId  Int
   recipe    Recipe   @relation(fields: [recipeId], references: [id])
-  userId    BigInt
+  userId    Int
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

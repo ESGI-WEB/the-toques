@@ -46,7 +46,7 @@ export async function getRecipeWithAvg(recipe: Recipe, prisma: PrismaClient) {
     }
 }
 
-export async function getRecipeWithIsLiked(recipe: Recipe, prisma: PrismaClient, userId: bigint) {
+export async function getRecipeWithIsLiked(recipe: Recipe, prisma: PrismaClient, userId: number) {
     const isLiked = await prisma.like.findFirst({
         where: {
             recipeId: recipe.id,
@@ -60,7 +60,7 @@ export async function getRecipeWithIsLiked(recipe: Recipe, prisma: PrismaClient,
     }
 }
 
-export async function getRecipesWithIsLiked(recipes: Recipe[], prisma: PrismaClient, userId: bigint) {
+export async function getRecipesWithIsLiked(recipes: Recipe[], prisma: PrismaClient, userId: number) {
     return await Promise.all(recipes.map(async (recipe: Recipe) => {
         return await getRecipeWithIsLiked(recipe, prisma, userId);
     }));

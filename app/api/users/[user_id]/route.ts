@@ -9,7 +9,7 @@ export async function GET(request: Request, {params}: { params: { user_id: strin
         return new NextResponse(null, {status: 401});
     }
 
-    if (loggedInUser.id !== BigInt(params.user_id)) {
+    if (loggedInUser.id !== Number(params.user_id)) {
         return new NextResponse(null, {status: 403});
     }
 
@@ -40,7 +40,7 @@ export async function PUT(request: Request, {params}: { params: { user_id: strin
         return new NextResponse(null, {status: 401});
     }
 
-    if (loggedInUser.id !== BigInt(params.user_id)) {
+    if (loggedInUser.id !== Number(params.user_id)) {
         return new NextResponse(null, {status: 403});
     }
 
@@ -76,7 +76,7 @@ export async function DELETE(request: Request, {params}: { params: { user_id: st
         return new NextResponse(null, {status: 401});
     }
 
-    if (loggedInUser.id !== BigInt(params.user_id)) {
+    if (loggedInUser.id !== Number(params.user_id)) {
         return new NextResponse(null, {status: 403});
     }
 
