@@ -17,6 +17,7 @@ import {useEffect, useState} from "react";
 import {FavoriteRounded} from "@mui/icons-material";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {useRouter} from "next/navigation";
+import SearchInput from "@/app/resources/components/SearchInput";
 
 export default function Header() {
     const [menuOpened, setMenuOpened] = useState(false);
@@ -78,7 +79,7 @@ export default function Header() {
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             CuisineConnect
                         </Typography>
-
+                        <SearchInput/>
                         {tokenData ?
                             <Button color="inherit" onClick={() => removeToken()}>Déconnexion</Button> :
                             <Button color="inherit" href="/login">Connexion</Button>

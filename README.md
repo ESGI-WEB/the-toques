@@ -2,9 +2,9 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-copy .env.local.example to .env.local and fill it with your own values
+copy .env.example to .env and fill it with your own values
 ```bash
-cp .env.local.example .env.local
+cp .env.example .env
 ```
 
 First, build the docker image:
