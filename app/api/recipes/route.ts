@@ -4,6 +4,7 @@ import {Prisma, PrismaClient} from "@prisma/client";
 import {createRecipeSchema} from "@/app/libs/recipes/validators";
 import fs from "fs";
 import {getRecipesWithAvg, getRecipesWithIsLiked} from "@/prisma/utils";
+import path from "path";
 
 export async function POST(request: Request) {
     const user = await isAuthenticated(request);
@@ -22,16 +23,11 @@ export async function POST(request: Request) {
     try {
         const {title, steps, ingredients, image} = value;
 
-        // check if /storage folder exists or create it
-        if (!fs.existsSync("public/storage")) {
-            fs.mkdirSync("public/storage");
-        }
-
         const imageBase64 = image.split(",")[1];
         const imageBuffer = Buffer.from(imageBase64, "base64");
         const imageName = `/storage/${Date.now()}-${Math.random() * 10000}.png`;
         const imagePath = `public${imageName}`;
-        fs.writeFileSync(imagePath, imageBuffer);
+        fs.writeFileSync(path.resolve(process.cwd(), imagePath), imageBuffer);
 
         const recipe = await prisma.recipe.create({
             data: {

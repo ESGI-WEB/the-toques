@@ -61,7 +61,9 @@ export default function Recipe() {
                 </div>
             </div>
             <div className='ingredient-with-image'>
-                <Image className="recipe-image" src={recipe.image} alt={recipe.title}/>
+                <div className="recipe-image">
+                    <Image src={recipe.image} alt={recipe.title} fill/>
+                </div>
                 <div className='ingredient-list'>
                     <Typography variant="h2">Ingredients</Typography>
                     <IngredientList recipe={recipe}/>
