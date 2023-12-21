@@ -7,14 +7,11 @@ export async function getRecipesMoreLiked(prisma: PrismaClient, wheres: string[]
 
     return prisma.$queryRaw<{id: number}[]>(
         Prisma.sql`
-            SELECT id
-            FROM Recipe
-            ${wheresSql}
-            ORDER BY (
-                SELECT AVG(mark)
-                FROM Mark
-                WHERE Mark.recipeId = Recipe.id
-            ) DESC
+            SELECT R.id
+            FROM "Recipe" R
+                     LEFT JOIN "Mark" M on R.id = M."recipeId"
+            group by R.id
+            order by avg(M.mark) desc
             LIMIT ${limit};
         `
     ).then((recipes) => recipes.map((recipe) => recipe.id));
