@@ -6,8 +6,8 @@
 
 .recipe-page .recipe-image {
     width: 50%;
-    height: 30vh;
     position: relative;
+    min-height: 30vh;
 }
 
 .recipe-page img {
