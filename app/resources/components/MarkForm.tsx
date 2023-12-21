@@ -40,6 +40,9 @@ export default function MarkForm(
             body: JSON.stringify(data),
         }).then((res) => {
             onCreated && onCreated(res);
+            setValue('title', '');
+            setValue('content', '');
+            setValue('mark', 4);
         }).catch((err) => {
             console.error(err);
             setError(err.error?.[0]?.message ?? "Une erreur est survenue lors de l'enregistrement de votre avis.");
