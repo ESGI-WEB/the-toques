@@ -50,6 +50,7 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
         },
         take: 30,
     });
+    console.log(similarRecipes)
 
     const systemMessage: IChatMessage = {
         role: 'system',
@@ -81,6 +82,7 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
         model: 'gpt-3.5-turbo',
         messages: [systemMessage as any],
     });
+    console.log(completion.choices[0].message)
 
     let recipeIds = []
     try {
@@ -100,6 +102,7 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
             }
         },
     });
+    console.log({recipesSelected})
 
     recipesSelected = await getRecipesWithAvg(recipesSelected, prisma);
     if (user) {
