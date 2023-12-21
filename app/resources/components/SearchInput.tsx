@@ -1,7 +1,6 @@
 import SearchIcon from "@mui/icons-material/Search";
 import {alpha, InputBase, styled} from "@mui/material";
 import React from "react";
-import {router} from "next/client";
 import {useRouter} from "next/navigation";
 
 export default function SearchInput() {

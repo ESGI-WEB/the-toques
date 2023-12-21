@@ -17,6 +17,11 @@ export async function POST(request: Request) {
         select: {
             id: true,
             title: true,
+            ingredients: {
+                select: {
+                    name: true,
+                }
+            },
         },
         take: 100,
     });
@@ -24,10 +29,11 @@ export async function POST(request: Request) {
     const systemMessage: IChatMessage = {
         role: 'system',
         content:
-            `Imaginez que vous disposez d'une liste de recettes avec les informations suivantes : "${recipes.map(recipe => `[id: ${recipe.id}, titre: ${recipe.title}]`).join(', ')}". ` +
-            `Imagine les étapes et les ingrédients associés à chaque titre de recette.` +
-            `Ensuite, recherche et affiche les IDs des recettes contenant : ${request}. ` +
-            `Le résultat final doit être un tableau JSON contenant uniquement les valeurs des IDs des recettes, triées par pertinence (le nombre de correspondances), avec les recettes les plus pertinentes en premier.` +
+            `Imaginez que vous disposez d'une liste de recettes avec les informations suivantes : ` +
+            `${recipes.map(recipe => `[id: ${recipe.id}, titre: ${recipe.title}], ingrédients: ${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}]`).join(', ')}. ` +
+            `Ensuite, recherchez et affichez les IDs des recettes contenant : ${request} parmi ses ingrédients.` +
+            `Le résultat final doit être un tableau JSON contenant uniquement les valeurs des IDs des recettes, triées par pertinence, ` +
+            `avec les recettes les plus pertinentes en premier. ` +
             `Si aucune recette ne contient ces ingrédients, le programme doit renvoyer un tableau vide []. ` +
             `La réponse finale doit être un tableau sous la forme [number, number, ...].`
     };
