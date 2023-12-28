@@ -54,6 +54,10 @@ body {
     justify-content: center;
 }
 
+.flex-justify-space-between {
+    justify-content: space-between;
+}
+
 .flex-items-baseline {
     align-items: baseline;
 }
@@ -126,6 +130,11 @@ body {
     margin-bottom: 40px;
 }
 
+.margin-y-20 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .margin-auto {
     margin: auto;
 }
@@ -154,8 +163,16 @@ body {
     right: 0;
 }
 
+.right-10 {
+    right: 10px;
+}
+
 .top-0 {
     top: 0;
+}
+
+.top-10 {
+    top: 10px;
 }
 
 .full-v-height {

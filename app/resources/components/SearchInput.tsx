@@ -3,7 +3,9 @@ import {alpha, InputBase, styled} from "@mui/material";
 import React from "react";
 import {useRouter} from "next/navigation";
 
-export default function SearchInput() {
+export default function SearchInput({
+    onKeyPress,
+}) {
 
     const StyledInputBase = styled(InputBase)(({ theme }) => ({
         color: 'inherit',
@@ -47,11 +49,9 @@ export default function SearchInput() {
 
     const handleKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
-            router.push('/search?characters=' + JSON.stringify(event.target.value));
+            onKeyPress(event);
         }
     };
-
-    const router = useRouter();
 
     return (
         <Search>

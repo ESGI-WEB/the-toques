@@ -1,9 +1,7 @@
 import {NextResponse} from "next/server";
 import {isAuthenticated} from "@/app/libs/auth";
-import {Prisma, PrismaClient} from "@prisma/client";
-import {createRecipeSchema} from "@/app/libs/recipes/validators";
-import fs from "fs";
-import {getRecipesMoreLiked, getRecipesWithAvg, getRecipesWithIsLiked} from "@/prisma/utils";
+import {PrismaClient} from "@prisma/client";
+import {getRecipesMoreLiked, getRecipesWithAvg, getRecipesWithCalories, getRecipesWithIsLiked} from "@/prisma/utils";
 import {IChatMessage} from "@/app/resources/models/message";
 import OpenAI from "openai";
 import {getCurrentSeason} from "@/app/libs/utils";
@@ -12,7 +10,6 @@ export async function GET(request: Request) {
     const prisma = new PrismaClient();
     const season = getCurrentSeason();
     const user = await isAuthenticated(request);
-
 
     const recipesSetIds = await getRecipesMoreLiked(prisma);
     const recipesSet = (await prisma.recipe.findMany({
@@ -28,12 +25,12 @@ export async function GET(request: Request) {
 
     const systemMessage: IChatMessage = {
         role: 'system',
-        content: `Parmis les recettes suivantes, choisis en au minimum 4 et au maximum 15 qui sont plutôt de la saison : "${season.name}" en France métropolitaine. 
-            Base toi sur les ingrédients de chaque recette et leur nom, qui doit être en lien avec la saison donnée.
-            Par exemple, une soupe de butternut sera adaptée pour l'automne alors que des épinards sont plutot d'été.
-            Retourne les id des recettes choisies dans un tableau contenant uniquement la valeur du id en JSON de la forme [number, number, ...], les plus correspondantes devront apparaitre en premier dans le tableau.
-            Voici les recettes parmis lesquelles tu dois choisir. Renvoi uniquement le tableau JSON des valeurs des ids : ` +
-            recipesSet
+        content: `Parmi les recettes suivantes, choisis-en au minimum 4 et au maximum 15 qui sont plutôt de la saison : "${season.name}" en France métropolitaine. 
+            Base-toi sur les ingrédients de chaque recette et leur nom, qui doit être en lien avec la saison donnée.
+            Par exemple, une soupe de butternut sera adaptée pour l'automne alors que des épinards sont plutôt d'été.
+            Retourne les id des recettes choisies dans un tableau contenant uniquement la valeur du id en JSON de la forme [number, number, ...], les plus correspondantes devront apparaître en premier dans le tableau.
+            Voici les recettes parmi lesquelles tu dois choisir. Renvoie uniquement le tableau JSON des valeurs des ids : ` +
+            recipesSet,
     };
 
     if (user) {
@@ -70,6 +67,9 @@ export async function GET(request: Request) {
                 in: recipeIds.map(id => parseInt(id)),
             }
         },
+        include: {
+            ingredients: true,
+        }
     });
 
     recipes = await getRecipesWithAvg(recipes, prisma);
@@ -77,6 +77,8 @@ export async function GET(request: Request) {
         recipes = await getRecipesWithIsLiked(recipes, prisma, user.id)
     }
 
+    const recipesWithCalories = await getRecipesWithCalories(recipes);
+
     await prisma.$disconnect();
-    return NextResponse.json(recipes, {status: 200});
+    return NextResponse.json(recipesWithCalories, {status: 200});
 }

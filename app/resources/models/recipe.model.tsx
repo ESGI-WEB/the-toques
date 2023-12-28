@@ -11,6 +11,7 @@ export interface Recipe {
     marksAvg?: number;
     marksCount?: number;
     authorId: number;
+    calories?: number;
 }
 
 export interface Ingredient {

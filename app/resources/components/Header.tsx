@@ -54,6 +54,12 @@ export default function Header() {
         setMenuOpened(false);
     }
 
+    const handleSearchKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            router.push('/search?characters=' + JSON.stringify(event.target.value));
+        }
+    };
+
     useEffect(() => {
         setTokenData(decodeToken());
     }, []);
@@ -79,7 +85,7 @@ export default function Header() {
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             CuisineConnect
                         </Typography>
-                        <SearchInput/>
+                        <SearchInput onKeyPress={handleSearchKeyPress} />
                         {tokenData ?
                             <Button color="inherit" onClick={() => removeToken()}>Déconnexion</Button> :
                             <Button color="inherit" href="/login">Connexion</Button>

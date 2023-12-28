@@ -1,4 +1,5 @@
 import {Prisma, PrismaClient, Recipe} from '@prisma/client';
+import OpenAI from "openai";
 
 export async function getRecipesMoreLiked(prisma: PrismaClient, wheres: string[] = [], limit = 100): Promise<number[]> {
     const wheresSql = wheres.length ?
@@ -63,6 +64,29 @@ export async function getRecipeWithIsLiked(recipe: Recipe, prisma: PrismaClient,
 export async function getRecipesWithIsLiked(recipes: Recipe[], prisma: PrismaClient, userId: number) {
     return await Promise.all(recipes.map(async (recipe: Recipe) => {
         return await getRecipeWithIsLiked(recipe, prisma, userId);
+    }));
+}
+
+export async function getRecipesWithCalories(recipes: Recipe[]) {
+    return await Promise.all(recipes.map(async (recipe: Recipe) => {
+        const openai = new OpenAI();
+
+        //TODO improve prompt
+        const systemMessage = {
+            role: 'system',
+            content: `Évalue obligatoirement le nombre de calories pour une recette intitulée "${recipe.title}" avec les ingrédients suivants : ${recipe.ingredients.map(ingredient => (ingredient.quantity + " " + ingredient.name)).join(', ')}.
+            Renvoie exclusivement la valeur estimée des calories pour cette recette sous forme d'un nombre entier. Par exemple, si tu estimes que la recette a 500 calories, renvoie simplement "500".`
+        };
+
+        const completion = await openai.chat.completions.create({
+            model: 'gpt-3.5-turbo',
+            messages: [systemMessage as any],
+        });
+
+        return {
+            ...recipe,
+            calories: JSON.parse("500")
+        };
     }));
 }
 
