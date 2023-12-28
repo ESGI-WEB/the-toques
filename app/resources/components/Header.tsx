@@ -56,7 +56,7 @@ export default function Header() {
 
     const handleSearchKeyPress = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
-            router.push('/search?characters=' + JSON.stringify(event.target.value));
+            router.push('/search?characters=' + JSON.stringify((event.target as HTMLInputElement).value));
         }
     };
 
