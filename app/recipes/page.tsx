@@ -12,10 +12,10 @@ import ToggleElements, {Filter} from "@/app/resources/components/ToggleElements"
 
 export default function Recipes() {
     const api = useApi();
-    const [recipes, setRecipes] = useState<Recipe[] | null>(null)
-    const [seasonRecipes, setSeasonRecipes] = useState<Recipe[] | null>(null)
+    const [recipes, setRecipes] = useState<Recipe[] | null>(null);
+    const [seasonRecipes, setSeasonRecipes] = useState<Recipe[] | null>(null);
     const season = getCurrentSeason();
-    const [isCaloriesSorted, setIsCaloriesSorted] = useState(false);
+    const [areCaloriesSorted, setAreCaloriesSorted] = useState(false);
 
     useEffect(() => {
         api('recipes').then(setRecipes);
@@ -30,34 +30,38 @@ export default function Recipes() {
     ];
 
     const handleToggleChange = (name: string, checked: boolean) => {
-        if (name === 'calories' && recipes !== null && seasonRecipes !== null) {
-            setIsCaloriesSorted(checked);
-            setRecipes(recipes.sort((a, b) => {
-                if (checked) {
-                    if (a.calories < b.calories) {
-                        return -1;
+        if (name === 'calories') {
+            setAreCaloriesSorted(checked);
+            if (recipes !== null) {
+                setRecipes(recipes.sort((a, b) => {
+                    if (checked) {
+                        if (a.calories < b.calories) {
+                            return -1;
+                        }
+                        return 0;
+                    } else {
+                        if (a.id < b.id) {
+                            return -1;
+                        }
+                        return 0;
                     }
-                    return 0;
-                } else {
-                    if (a.id < b.id) {
-                        return -1;
+                }));
+            }
+            if (seasonRecipes != null) {
+                setSeasonRecipes(seasonRecipes?.sort((a, b) => {
+                    if (checked) {
+                        if (a.calories < b.calories) {
+                            return -1;
+                        }
+                        return 0;
+                    } else {
+                        if (a.id < b.id) {
+                            return -1;
+                        }
+                        return 0;
                     }
-                    return 0;
-                }
-            }));
-            setSeasonRecipes(seasonRecipes?.sort((a, b) => {
-                if (checked) {
-                    if (a.calories < b.calories) {
-                        return -1;
-                    }
-                    return 0;
-                } else {
-                    if (a.id < b.id) {
-                        return -1;
-                    }
-                    return 0;
-                }
-            }));
+                }));
+            }
         }
     }
 
@@ -77,7 +81,7 @@ export default function Recipes() {
                             <Typography>Nous recherchons nos recettes de saison...</Typography>
                         </div>}
                         {seasonRecipes !== null && seasonRecipes.map(recipe => (
-                            <RecipeCard key={recipe.id} recipe={recipe} isCaloriesSorted={isCaloriesSorted}/>
+                            <RecipeCard key={recipe.id} recipe={recipe} areCaloriesSorted={areCaloriesSorted}/>
                         ))}
                     </div>
                 </>
@@ -94,7 +98,7 @@ export default function Recipes() {
                     <Typography>Qu&apos;allez vous cuisiner aujourd&apos;hui ? Vous allez très vite le savoir</Typography>
                 </div>}
                 {recipes !== null && recipes.map(recipe => (
-                    <RecipeCard key={recipe.id} recipe={recipe} isCaloriesSorted={isCaloriesSorted}/>
+                    <RecipeCard key={recipe.id} recipe={recipe} areCaloriesSorted={areCaloriesSorted}/>
                 ))}
                 {recipes !== null && recipes.length === 0 &&
                     <Typography>Aucune recette correspondante <SentimentDissatisfiedIcon/></Typography>

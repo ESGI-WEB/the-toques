@@ -24,7 +24,7 @@ export default function Upload({
                 className="image-upload-input"
             />
             {selectedFile ? (
-                <Image className="image-upload-label" src={URL.createObjectURL(selectedFile)} alt="preview"/>
+                <Image className="image-upload-label" width="100" height="100" src={URL.createObjectURL(selectedFile)} alt="preview"/>
             ) : (
                 <div className="upload-drag">
                     <p>Image de la recette</p>

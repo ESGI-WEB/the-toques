@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server";
 import {isAuthenticated} from "@/app/libs/auth";
 import {PrismaClient} from "@prisma/client";
-import {getRecipesMoreLiked, getRecipesWithAvg, getRecipesWithCalories, getRecipesWithIsLiked} from "@/prisma/utils";
+import {getRecipesMoreLiked, getRecipesWithAvg, getRecipesWithIsLiked} from "@/prisma/utils";
 import {IChatMessage} from "@/app/resources/models/message";
 import OpenAI from "openai";
 import {getCurrentSeason} from "@/app/libs/utils";
@@ -67,9 +67,6 @@ export async function GET(request: Request) {
                 in: recipeIds.map(id => parseInt(id)),
             }
         },
-        include: {
-            ingredients: true,
-        }
     });
 
     recipes = await getRecipesWithAvg(recipes, prisma);
@@ -77,8 +74,6 @@ export async function GET(request: Request) {
         recipes = await getRecipesWithIsLiked(recipes, prisma, user.id)
     }
 
-    const recipesWithCalories = await getRecipesWithCalories(recipes);
-
     await prisma.$disconnect();
-    return NextResponse.json(recipesWithCalories, {status: 200});
+    return NextResponse.json(recipes, {status: 200});
 }

@@ -1,5 +1,6 @@
 import {Prisma, PrismaClient, Recipe} from '@prisma/client';
 import OpenAI from "openai";
+import {Ingredient} from "@/app/resources/models/recipe.model";
 
 export async function getRecipesMoreLiked(prisma: PrismaClient, wheres: string[] = [], limit = 100): Promise<number[]> {
     const wheresSql = wheres.length ?
@@ -67,27 +68,22 @@ export async function getRecipesWithIsLiked(recipes: Recipe[], prisma: PrismaCli
     }));
 }
 
-export async function getRecipesWithCalories(recipes: Recipe[]) {
-    return await Promise.all(recipes.map(async (recipe: Recipe) => {
-        const openai = new OpenAI();
+export async function getCaloriesOfRecipe(title: string, ingredients: Ingredient[]) {
+    const openai = new OpenAI();
 
-        //TODO improve prompt
-        const systemMessage = {
-            role: 'system',
-            content: `Évalue obligatoirement le nombre de calories pour une recette intitulée "${recipe.title}" avec les ingrédients suivants : ${recipe.ingredients.map(ingredient => (ingredient.quantity + " " + ingredient.name)).join(', ')}.
-            Renvoie exclusivement la valeur estimée des calories pour cette recette sous forme d'un nombre entier. Par exemple, si tu estimes que la recette a 500 calories, renvoie simplement "500".`
-        };
+    //TODO improve prompt
+    const systemMessage = {
+        role: 'system',
+        content: `Évalue obligatoirement le nombre de calories pour une recette intitulée "${title}" avec les ingrédients suivants : ${ingredients.map(ingredient => (ingredient.quantity + " " + ingredient.name)).join(', ')}.
+        Renvoie exclusivement la valeur estimée des calories pour cette recette sous forme d'un nombre entier. Par exemple, si tu estimes que la recette a 500 calories, renvoie simplement "500".`
+    };
 
-        const completion = await openai.chat.completions.create({
-            model: 'gpt-3.5-turbo',
-            messages: [systemMessage as any],
-        });
+    const completion = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [systemMessage as any],
+    });
 
-        return {
-            ...recipe,
-            calories: JSON.parse("500")
-        };
-    }));
+    return JSON.parse("500");
 }
 
 export const userSelect = {

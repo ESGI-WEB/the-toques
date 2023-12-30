@@ -3,7 +3,7 @@ import {isAuthenticated} from "@/app/libs/auth";
 import {Prisma, PrismaClient} from "@prisma/client";
 import {createRecipeSchema} from "@/app/libs/recipes/validators";
 import fs from "fs";
-import {getRecipesWithAvg, getRecipesWithCalories, getRecipesWithIsLiked} from "@/prisma/utils";
+import {getCaloriesOfRecipe, getRecipesWithAvg, getRecipesWithIsLiked} from "@/prisma/utils";
 
 export async function POST(request: Request) {
     const user = await isAuthenticated(request);
@@ -28,6 +28,8 @@ export async function POST(request: Request) {
         const imagePath = `public${imageName}`;
         fs.writeFileSync(imagePath, imageBuffer);
 
+        const caloriesNumber = await getCaloriesOfRecipe(title, ingredients);
+
         const recipe = await prisma.recipe.create({
             data: {
                 title,
@@ -39,6 +41,7 @@ export async function POST(request: Request) {
                     create: steps,
                 },
                 image: imageName,
+                calories: caloriesNumber,
             },
             include: {
                 ingredients: true,
@@ -62,12 +65,7 @@ export async function POST(request: Request) {
 export async function GET(request: Request) {
     const prisma = new PrismaClient();
 
-    let recipes = [];
-    recipes = await prisma.recipe.findMany({
-        include: {
-            ingredients: true,
-        }
-    });
+    let recipes = await prisma.recipe.findMany();
 
     recipes = await getRecipesWithAvg(recipes, prisma);
 
@@ -76,8 +74,6 @@ export async function GET(request: Request) {
         recipes = await getRecipesWithIsLiked(recipes, prisma, user.id)
     }
 
-    const recipesWithCalories = await getRecipesWithCalories(recipes);
-
     await prisma.$disconnect();
-    return NextResponse.json(recipesWithCalories, {status: 200});
+    return NextResponse.json(recipes, {status: 200});
 }

@@ -9,9 +9,9 @@ import Chip from '@mui/material/Chip';
 
 export default function RecipeCard(
     {
-        recipe, onLikeChange = (recipe: Recipe) => {}, isCaloriesSorted = false
+        recipe, onLikeChange = (recipe: Recipe) => {}, areCaloriesSorted = false
     }: {
-        recipe: Recipe, onLikeChange?: any, isCaloriesSorted?: boolean
+        recipe: Recipe, onLikeChange?: any, areCaloriesSorted?: boolean
     }
 ) {
     const router = useRouter();
@@ -25,7 +25,7 @@ export default function RecipeCard(
             }}
         >
             <CardActionArea>
-                {recipe.calories && isCaloriesSorted && (
+                {recipe.calories && areCaloriesSorted && (
                     <Chip className="absolute right-10 top-10" size="small" label={`${recipe.calories} cal`} />
                 )}
                 <CardMedia
