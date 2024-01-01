@@ -18,6 +18,8 @@ import RecipeDelete from "@/app/resources/components/RecipeDelete";
 import RecipeCard from "@/app/resources/components/RecipeCard";
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import Image from "next/image";
+import Button from "@mui/material/Button";
+import DialogInformations from "@/app/resources/components/DialogInformations";
 
 export default function Recipe() {
     const params = useParams();
@@ -26,7 +28,16 @@ export default function Recipe() {
     const [recommendations, setRecommendations] = useState<Recipe[]|null>(null);
     const [marksWithText, setMarksWithText] = useState<Mark[]>([])
     const [sides, setSides] = useState<string[]|null>(null);
+    const [openDialog, setOpenDialog] = useState(false);
     const api = useApi();
+
+    const handleClickOpenDialog = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    }
 
     const setUpRecipe = (recipe: Recipe) => {
         setRecipe(recipe);
@@ -53,6 +64,8 @@ export default function Recipe() {
                     <div>
                         <RecipeLike recipe={recipe}/>
                         <RecipeDelete recipe={recipe}/>
+                        <Button onClick={handleClickOpenDialog} variant="outlined">Créer liste de courses</Button>
+                        <DialogInformations open={openDialog} onClose={handleCloseDialog} title="Liste de courses" content="contenu" />
                     </div>
                 </div>
                 <div className="flex gap-10 flex-items-center">
@@ -92,7 +105,7 @@ export default function Recipe() {
             </div>
 
             <div>
-                <Typography variant="h2" gutterBottom>Recommendations similaires</Typography>
+                <Typography variant="h2" gutterBottom>Recommandations similaires</Typography>
                 {recommendations === null && <div className="flex flex-center gap-20 flex-column">
                     <CircularProgress/>
                     <Typography>Nous recherchons les meilleurs recettes correspondantes</Typography>
