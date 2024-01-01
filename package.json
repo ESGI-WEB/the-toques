@@ -37,7 +37,9 @@
       "react": "18.2.0",
       "react-dom": "18.2.0",
       "react-hook-form": "^7.48.2",
-      "reflect-metadata": "^0.1.13"
+      "react-speech-recognition": "^3.10.0",
+      "reflect-metadata": "^0.1.13",
+      "regenerator-runtime": "^0.14.1"
    },
    "devDependencies": {
       "@types/node": "^16.18.50",

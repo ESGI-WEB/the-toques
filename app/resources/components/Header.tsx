@@ -18,6 +18,7 @@ import {FavoriteRounded} from "@mui/icons-material";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {useRouter} from "next/navigation";
 import SearchInput from "@/app/resources/components/SearchInput";
+import AudioSearch from "@/app/resources/components/AudioSearch";
 
 export default function Header() {
     const [menuOpened, setMenuOpened] = useState(false);
@@ -85,6 +86,7 @@ export default function Header() {
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             CuisineConnect
                         </Typography>
+                        <AudioSearch />
                         <SearchInput onKeyPress={handleSearchKeyPress} />
                         {tokenData ?
                             <Button color="inherit" onClick={() => removeToken()}>Déconnexion</Button> :

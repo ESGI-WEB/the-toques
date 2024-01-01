@@ -39,7 +39,7 @@ export default function Search() {
     return (
         <>
             <Typography variant="h1" gutterBottom>
-                Résultats de la recherche
+                Résultats de la recherche pour "{charactersForSearch}"
             </Typography>
             {loading && <CircularProgress />}
             {recipes !== null ? (
