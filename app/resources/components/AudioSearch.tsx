@@ -47,7 +47,7 @@ export default function AudioSearch() {
 
     return (
         <KeyboardVoiceRoundedIcon
-            className={`cursor-pointer ${listening ? 'active' : ''}`}
+            className={`cursor-pointer ${listening ? 'zoom-infinite' : ''}`}
             onClick={handleVoiceIconClick}
         />
     );

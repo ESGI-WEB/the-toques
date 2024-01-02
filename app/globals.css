@@ -252,3 +252,19 @@ body {
 .cursor-pointer {
     cursor: pointer;
 }
+
+@keyframes zoomIn {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.zoom-infinite {
+    animation: zoomIn 1s infinite;
+}

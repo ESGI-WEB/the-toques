@@ -71,11 +71,10 @@ export async function getRecipesWithIsLiked(recipes: Recipe[], prisma: PrismaCli
 export async function getCaloriesOfRecipe(title: string, ingredients: Ingredient[]) {
     const openai = new OpenAI();
 
-    //TODO improve prompt
     const systemMessage = {
         role: 'system',
-        content: `Évalue obligatoirement le nombre de calories pour une recette intitulée "${title}" avec les ingrédients suivants : ${ingredients.map(ingredient => (ingredient.quantity + " " + ingredient.name)).join(', ')}.
-        Renvoie exclusivement la valeur estimée des calories pour cette recette sous forme d'un nombre entier. Par exemple, si tu estimes que la recette a 500 calories, renvoie simplement "500".`
+        content: `Calcul approximativement le nombre de calories pour la recette "${title}" avec les ingrédients suivants : ${ingredients.map(ingredient => (ingredient.quantity + " " + ingredient.name)).join(', ')}.
+        Renvoie uniquement la valeur estimée des calories pour cette recette sous forme d'un nombre entier. Par exemple, si tu estimes que la recette procure 500 calories, renvoie simplement 500, et rien d'autre.`
     };
 
     const completion = await openai.chat.completions.create({
@@ -83,7 +82,10 @@ export async function getCaloriesOfRecipe(title: string, ingredients: Ingredient
         messages: [systemMessage as any],
     });
 
-    return JSON.parse("500");
+    //TODO improve prompt to get number of calories
+
+    return JSON.parse("500")
+    //return JSON.parse(completion.choices[0].message.content ?? "");
 }
 
 export const userSelect = {

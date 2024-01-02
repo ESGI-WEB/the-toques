@@ -9,6 +9,7 @@ import copy from 'clipboard-copy';
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import parse from 'html-react-parser';
 
 export default function DialogInformations({ open, onClose, title, content }) {
 
@@ -47,18 +48,18 @@ export default function DialogInformations({ open, onClose, title, content }) {
             </DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                    {content}
+                    {parse(content)}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleCopyToClipboard}>
-                    <ContentPasteOutlinedIcon></ContentPasteOutlinedIcon>
+                    <ContentPasteOutlinedIcon />
                 </Button>
                 <Button onClick={handleShareOnSocialMedia}>
-                    <IosShareOutlinedIcon></IosShareOutlinedIcon>
+                    <IosShareOutlinedIcon />
                 </Button>
                 <Button onClick={handleSendByEmail}>
-                    <EmailOutlinedIcon></EmailOutlinedIcon>
+                    <EmailOutlinedIcon />
                 </Button>
                 <Button onClick={onClose}>Fermer</Button>
             </DialogActions>
