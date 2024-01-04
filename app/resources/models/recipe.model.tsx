@@ -12,6 +12,7 @@ export interface Recipe {
     marksCount?: number;
     authorId: number;
     calories?: number;
+    plates: number;
 }
 
 export interface Ingredient {

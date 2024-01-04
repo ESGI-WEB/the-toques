@@ -11,6 +11,8 @@ import {isAuthenticated} from "@/app/libs/auth";
 export async function POST(request: Request) {
     const prisma = new PrismaClient();
 
+    const { characters } = await request.json();
+
     const user = await isAuthenticated(request);
 
     const recipes = await prisma.recipe.findMany({
@@ -31,7 +33,7 @@ export async function POST(request: Request) {
         content:
             `Imaginez que vous disposez d'une liste de recettes avec les informations suivantes : ` +
             `${recipes.map(recipe => `[id: ${recipe.id}, titre: ${recipe.title}], ingrédients: ${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}]`).join(', ')}. ` +
-            `Ensuite, recherchez et affichez les IDs des recettes contenant : ${request} parmi ses ingrédients.` +
+            `Ensuite, recherchez et affichez les IDs des recettes contenant : ${characters} parmi ses ingrédients.` +
             `Le résultat final doit être un tableau JSON contenant uniquement les valeurs des IDs des recettes, triées par pertinence, ` +
             `avec les recettes les plus pertinentes en premier. ` +
             `Si aucune recette ne contient ces ingrédients, le programme doit renvoyer un tableau vide []. ` +

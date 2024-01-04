@@ -25,7 +25,9 @@ export default function Search() {
         setLoading(true);
         api(`search`, {
             method: 'POST',
-            body: JSON.stringify(charactersForSearch),
+            body: JSON.stringify({
+                "characters" : charactersForSearch
+            }),
         }).then((res) => {
             setUpRecipes(res);
         }).catch((err) => {
@@ -50,11 +52,11 @@ export default function Search() {
                     {recipes.length === 0 && (
                         <Typography>Aucun résultat<SentimentDissatisfiedIcon /></Typography>
                     )}
-                    {error !== null && (
-                        <Typography color="error">{error}</Typography>
-                    )}
                 </div>
             ) : null}
+            {error !== null && (
+                <Typography color="error">{error}</Typography>
+            )}
         </>
     );
 }

@@ -19,7 +19,7 @@ import RecipeCard from "@/app/resources/components/RecipeCard";
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import Image from "next/image";
 import Button from "@mui/material/Button";
-import DialogInformations from "@/app/resources/components/DialogInformations";
+import DialogShopping from "@/app/resources/components/DialogShopping";
 import parse from 'html-react-parser';
 
 export default function Recipe() {
@@ -28,8 +28,7 @@ export default function Recipe() {
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [recommendations, setRecommendations] = useState<Recipe[]|null>(null);
     const [marksWithText, setMarksWithText] = useState<Mark[]>([])
-    const [sides, setSides] = useState<string[]|null>(null);
-    const [shoppingList, setShoppingList] = useState<string[]|null>(null);
+    const [sides, setSides] = useState<string|null>(null);
     const [openDialog, setOpenDialog] = useState(false);
     const api = useApi();
 
@@ -50,7 +49,6 @@ export default function Recipe() {
         api('recipes/' + recipeId).then(setUpRecipe);
         api('recipes/' + recipeId + '/recommendations').then(setRecommendations);
         api('recipes/' + recipeId + '/sides').then(sides => setSides(sides.content.replace('\n', '<br>')));
-        api('recipes/' + recipeId + '/shopping').then(shoppingList => setShoppingList(shoppingList.content.replace('\n', '<br>')));
     }, []);
 
     if (!recipe) {
@@ -68,7 +66,7 @@ export default function Recipe() {
                         <RecipeLike recipe={recipe}/>
                         <RecipeDelete recipe={recipe}/>
                         <Button onClick={handleClickOpenDialog} variant="outlined">Créer liste de courses</Button>
-                        <DialogInformations open={openDialog} onClose={handleCloseDialog} title="Liste de courses" content={shoppingList} />
+                        <DialogShopping open={openDialog} onClose={handleCloseDialog} recipe={recipe} />
                     </div>
                 </div>
                 <div className="flex gap-10 flex-items-center">
@@ -79,7 +77,10 @@ export default function Recipe() {
             <div className='ingredient-with-image'>
                 <Image className="recipe-image" width="100" height="100" src={recipe.image} alt={recipe.title}/>
                 <div className='ingredient-list'>
-                    <Typography variant="h2">Ingrédients</Typography>
+                    <div>
+                        <Typography variant="h2">Ingrédients</Typography>
+                        <Typography variant="h8">Pour {recipe.plates} parts</Typography>
+                    </div>
                     <IngredientList recipe={recipe}/>
                 </div>
             </div>
@@ -101,7 +102,7 @@ export default function Recipe() {
                             <Typography>Nous recherchons les meilleurs accompagnements pour cette recette...</Typography>
                         </div>}
                         {sides !== null &&
-                            <Typography>parse(sides)</Typography>
+                            <Typography>{parse(sides)}</Typography>
                         }
                     </div>
                 </div>

@@ -73,8 +73,9 @@ export async function getCaloriesOfRecipe(title: string, ingredients: Ingredient
 
     const systemMessage = {
         role: 'system',
-        content: `Calcul approximativement le nombre de calories pour la recette "${title}" avec les ingrédients suivants : ${ingredients.map(ingredient => (ingredient.quantity + " " + ingredient.name)).join(', ')}.
-        Renvoie uniquement la valeur estimée des calories pour cette recette sous forme d'un nombre entier. Par exemple, si tu estimes que la recette procure 500 calories, renvoie simplement 500, et rien d'autre.`
+        content: `Calcule approximativement le nombre de calories pour la recette "${title}" en utilisant les ingrédients suivants : ${ingredients.map(ingredient => `${ingredient.quantity} ${ingredient.name}`).join(', ')}. `+
+            `Renvoie uniquement la valeur estimée des calories pour cette recette sous forme d'un nombre entier (format JSON). `+
+            `Assure-toi que la sortie est strictement le nombre estimé de calories, par exemple, 500, et exclut tout texte ou phrase supplémentaire.`
     };
 
     const completion = await openai.chat.completions.create({
@@ -82,10 +83,7 @@ export async function getCaloriesOfRecipe(title: string, ingredients: Ingredient
         messages: [systemMessage as any],
     });
 
-    //TODO improve prompt to get number of calories
-
-    return JSON.parse("500")
-    //return JSON.parse(completion.choices[0].message.content ?? "");
+    return JSON.parse(completion.choices[0].message.content ?? "");
 }
 
 export const userSelect = {
