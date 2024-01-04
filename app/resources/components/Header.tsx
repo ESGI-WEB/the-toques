@@ -24,6 +24,7 @@ export default function Header() {
     const [menuOpened, setMenuOpened] = useState(false);
     const [tokenData, setTokenData] = useState<JWTToken|false>(false);
     const router = useRouter();
+    const [transcript, setTranscript] = useState<string>('');
 
     const allMenuItems: MenuItem[] = [
         {text: 'Accueil', link: '/', icon: <HomeIcon/>},
@@ -86,8 +87,8 @@ export default function Header() {
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             CuisineConnect
                         </Typography>
-                        <AudioSearch />
-                        <SearchInput onKeyPress={handleSearchKeyPress} />
+                        <AudioSearch onTranscriptChange={setTranscript}/>
+                        <SearchInput onKeyPress={handleSearchKeyPress} value={transcript}/>
                         {tokenData ?
                             <Button color="inherit" onClick={() => removeToken()}>Déconnexion</Button> :
                             <Button color="inherit" href="/login">Connexion</Button>

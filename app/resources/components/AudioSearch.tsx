@@ -4,7 +4,9 @@ import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognitio
 import { useRouter } from "next/navigation";
 import MicOffIcon from '@mui/icons-material/MicOff';
 
-export default function AudioSearch() {
+export default function AudioSearch({
+    onTranscriptChange = (transcript: string) => { },
+}) {
     const router = useRouter();
     const [isSpeechRecognitionInitialized, setIsSpeechRecognitionInitialized] = useState(false);
 
@@ -22,9 +24,12 @@ export default function AudioSearch() {
     useEffect(() => {
         if (!listening && transcript) {
             router.push('/search?characters=' + encodeURIComponent(transcript));
-            resetTranscript();
         }
     }, [listening, transcript, resetTranscript, router]);
+
+    useEffect(() => {
+        onTranscriptChange(transcript);
+    }, [transcript]);
 
     const handleVoiceIconClick = () => {
         if (listening) {

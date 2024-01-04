@@ -12,6 +12,10 @@ export async function GET(request: Request) {
     const user = await isAuthenticated(request);
 
     const recipesSetIds = await getRecipesMoreLiked(prisma);
+    if (!recipesSetIds || recipesSetIds.length < 0) {
+        await prisma.$disconnect();
+        return NextResponse.json([], {status: 200});
+    }
     const recipesSet = (await prisma.recipe.findMany({
         where: {
             id: {
