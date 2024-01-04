@@ -31,6 +31,28 @@ export async function POST(request: Request) {
 
     }
 
+    // check if request has a ?recipeId so we get the recipe details and use it in the bot
+    const url = new URL(request.url);
+    const recipeId = url.searchParams.get('recipeId');
+    if (recipeId) {
+        const recipe = await prisma.recipe.findUnique({
+            where: {
+                id: parseInt(recipeId),
+            },
+            include: {
+                ingredients: true,
+                steps: true,
+            }
+        });
+        if (recipe) {
+            systemMessage.content += "L'utilisateur est actuellement sur une page de recette, s'il te pose des questions dessus, voila le détail de la recette qu'il voit : ";
+            systemMessage.content += "La recette s'appelle " + recipe.title + ". ";
+            systemMessage.content += "Pour " + recipe.plates + " plats. ";
+            systemMessage.content += "Les ingredients de la recette : " + recipe.ingredients.map(ingredient => ingredient.quantity + ' ' + ingredient.name) + ". ";
+            systemMessage.content += "Les étapes de la recette : " + recipe.steps.map(step => step.name + ' : ' + step.description) + ". ";
+        }
+    }
+
     const data = await request.json();
     if (!data.message) {
         return new Response('Message is required', {status: 400});
