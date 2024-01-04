@@ -42,7 +42,9 @@ export default function Recipe() {
 
     const setUpRecipe = (recipe: Recipe) => {
         setRecipe(recipe);
-        setMarksWithText(recipe.marks.filter(mark => String(mark.content).trim().length > 0))
+        if (recipe?.marks) {
+            setMarksWithText(recipe.marks.filter(mark => String(mark.content).trim().length > 0))
+        }
     }
 
     useEffect(() => {
@@ -91,7 +93,7 @@ export default function Recipe() {
             <div>
                 <Typography variant="h2">Etapes de la recette</Typography>
                 <div className="flex flex-column gap-30 margin-top-20">
-                    {recipe.steps.map((step, index) => (
+                    {recipe?.steps && recipe.steps.map((step, index) => (
                         <div className="flex flex-column gap-10" key={step.id}>
                             <Typography variant="h6">Etape n°{index + 1} : {step.name}</Typography>
                             <Typography>{step.description}</Typography>
@@ -133,7 +135,7 @@ export default function Recipe() {
                     onCreated={(mark: Mark) => {
                         setUpRecipe({
                             ...recipe,
-                            marks: [mark, ...recipe.marks],
+                            marks: [mark, ...(recipe?.marks ?? [])],
                         });
                     }}
                 />
