@@ -7,6 +7,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import BotMessage from "@/app/resources/components/BotMessage";
 import {IChatMessage} from "@/app/resources/models/message";
 import CenteredModal from "@/app/resources/components/CenteredModal";
+import {useParams} from "next/navigation";
 
 export default function ChatBot() {
     const api = useApi();
@@ -19,6 +20,7 @@ export default function ChatBot() {
         {content: "Bonjour, je suis Jean Bon, comment puis-je vous aider ?", role: 'assistant'}
     ] as IChatMessage[]);
     const [error, setError] = useState<string | null>(null);
+    const {recipe_id} = useParams();
 
     function addMessage(message: IChatMessage) {
         setMessages(messages => [...messages, message])
@@ -54,7 +56,8 @@ export default function ChatBot() {
         setIsLoading(true);
         scrollModalToBottom();
 
-        api('bot', {
+        const url = recipe_id ? `bot?recipeId=${recipe_id}` : 'bot';
+        api(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
