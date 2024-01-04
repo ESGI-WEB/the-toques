@@ -1,17 +1,16 @@
 version: "3"
 
 services:
-  db:
-    image: mariadb:10.4
-    environment:
-      MYSQL_ROOT_PASSWORD: changeMe
-      MYSQL_DATABASE: app
-      MYSQL_USER: maria-user
-      MYSQL_PASSWORD: changeMe
+  cockroachdb:
+    image: cockroachdb/cockroach:latest
+    command: start-single-node --insecure --advertise-addr 'localhost'
     ports:
-      - "3306:3306"
+      - "26257:26257"
+      - "8080:8080"
     volumes:
-      - db_data:/var/lib/mysql
+      - cockroach-data:/cockroach/cockroach-data
+    networks:
+      - backend
 
   next:
     build:
@@ -22,7 +21,13 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db
+      - cockroachdb
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
 
 volumes:
-  db_data:
+  cockroach-data:

@@ -81,7 +81,7 @@ export default function Recipe() {
                 <div className='ingredient-list'>
                     <div>
                         <Typography variant="h2">Ingrédients</Typography>
-                        <Typography variant="h8">Pour {recipe.plates} parts</Typography>
+                        <Typography variant="h6">Pour {recipe.plates} parts</Typography>
                     </div>
                     <IngredientList recipe={recipe}/>
                 </div>
