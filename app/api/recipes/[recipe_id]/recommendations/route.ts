@@ -50,16 +50,16 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
         },
         take: 30,
     });
+    console.log(similarRecipes)
 
     const systemMessage: IChatMessage = {
         role: 'system',
         content: `Étant donné la recette : "${recipe.title}" `+
             `avec comme ingrédients : "${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}". `+
             `Choisis parmi les recettes suivantes celles qui sont le plus similaire à la recette précédente. ` +
-            `Retourne les 4 plus similaires dans un tableau contenant uniquement la valeur du id en JSON. ` +
+            `Retourne les 4 plus similaires uniquement dans un tableau JSON contenant uniquement la valeur des id en JSON comme ceci [number, number, ...]. ` +
             `Si il y a moins de 4 recettes similaires, envoie en moins, s'il n'y en a pas, renvoi [].` +
-            `Voici la liste de recettes parmis lesquelles tu dois choisir les id. Le content de ta réponse doit uniquement contenir le tableau de la forme [number, number, ...]. `+
-            `Renvoi uniquement le tableau JSON des valeurs des ids avec les plus similaires en premier. ` +
+            `Voici la liste de recettes parmis lesquelles choisir les identifiants (id). Le contenu de ta réponse doit uniquement contenir le tableau JSON. `+
             similarRecipes.map(recipe => `[id: ${recipe.id}, titre: ${recipe.title}, ingrédients: ${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}]`)
                 .join(', ')
     };
@@ -81,6 +81,7 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
         model: 'gpt-3.5-turbo',
         messages: [systemMessage as any],
     });
+    console.log(completion.choices[0].message)
 
     let recipeIds = []
     try {
@@ -100,6 +101,7 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
             }
         },
     });
+    console.log({recipesSelected})
 
     recipesSelected = await getRecipesWithAvg(recipesSelected, prisma);
     if (user) {

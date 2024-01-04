@@ -2,8 +2,8 @@ import {NextResponse} from "next/server";
 import {isAuthenticated} from "@/app/libs/auth";
 import {Prisma, PrismaClient} from "@prisma/client";
 import {createRecipeSchema} from "@/app/libs/recipes/validators";
-import fs from "fs";
 import {getCaloriesOfRecipe, getRecipesWithAvg, getRecipesWithIsLiked} from "@/prisma/utils";
+import {uploadToDropbox} from "@/app/libs/utils";
 
 export async function POST(request: Request) {
     const user = await isAuthenticated(request);
@@ -24,9 +24,8 @@ export async function POST(request: Request) {
 
         const imageBase64 = image.split(",")[1];
         const imageBuffer = Buffer.from(imageBase64, "base64");
-        const imageName = `/storage/${Date.now()}-${Math.random() * 10000}.png`;
-        const imagePath = `public${imageName}`;
-        fs.writeFileSync(imagePath, imageBuffer);
+        const imageName = `${Date.now()}-${Math.random() * 10000}.png`;
+        const url = await uploadToDropbox(imageBuffer, imageName);
 
         const caloriesNumber = await getCaloriesOfRecipe(title, ingredients);
 
@@ -40,7 +39,7 @@ export async function POST(request: Request) {
                 steps: {
                     create: steps,
                 },
-                image: imageName,
+                image: url,
                 calories: caloriesNumber,
             },
             include: {

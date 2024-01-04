@@ -2,7 +2,6 @@ import {NextResponse} from "next/server";
 import {PrismaClient} from "@prisma/client";
 import {IChatMessage} from "@/app/resources/models/message";
 import OpenAI from "openai";
-import {isAuthenticated} from "@/app/libs/auth";
 
 export async function POST(request: Request, {params}: { params: { recipe_id: string } }) {
     const prisma = new PrismaClient();
@@ -18,7 +17,6 @@ export async function POST(request: Request, {params}: { params: { recipe_id: st
             ingredients: true,
         }
     });
-    const user = await isAuthenticated(request);
 
     if (!recipe) {
         await prisma.$disconnect();

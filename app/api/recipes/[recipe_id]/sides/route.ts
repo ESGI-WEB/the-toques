@@ -31,7 +31,7 @@ export async function GET(request: Request, {params}: { params: { recipe_id: str
         content: `Étant donné la recette : "${recipe.title}" `+
             `avec comme ingrédients : "${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}". `+
             `Genère un texte permettant de proposer des accompagnements liés à la recette, comme du vin, des desserts ou des fromages. `+
-            `Pour les sauts de lignes utilise <br>, pour les listes utilise <ul> et <li> et <strong> pour le gras. Le texte doit maximum faire entre 500 et 1000 caractères `+
+            `Pour les sauts de lignes utilise <br>, pour les listes utilise <ul> et <li> et <strong> pour le gras. Le texte doit maximum faire entre 50 et 200 caractères `+
             `Comme le ferait un sommelier, un pâtissier ou un fromager. Commence par "Avec cette recette, nous vous proposons...". `,
     };
 

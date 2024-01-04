@@ -10,7 +10,7 @@ import App from "@/app/resources/components/App";
 const inter = Inter({subsets: ['latin']})
 
 export const metadata: Metadata = {
-    title: 'CuisineConnect',
+    title: 'CuisineConnect | Des recettes de cuisine totalement toqués',
     description: 'Recherche tes recettes de cuisine préférées.',
 }
 
