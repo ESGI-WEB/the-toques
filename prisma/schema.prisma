@@ -39,7 +39,7 @@ model Recipe {
   marks       Mark[]
   favorites   User[]             @relation("UserRecipesFavorites")
   likes       Like[]
-  calories    Int
+  calories    Int?
 }
 
 model RecipeIngredient {

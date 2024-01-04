@@ -11,7 +11,7 @@ import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import parse from 'html-react-parser';
 import {useEffect, useState} from "react";
-import {CircularProgress, TextField} from '@mui/material';
+import {CircularProgress, Snackbar, TextField} from '@mui/material';
 import {useApi} from "@/app/resources/services/useApi";
 import {useParams} from "next/navigation";
 import Typography from "@mui/material/Typography";
@@ -23,6 +23,7 @@ export default function DialogShopping({ open, onClose, recipe }) {
     const [shoppingList, setShoppingList] = useState<string|null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [notification, setNotification] = useState<string|null>(null);
     const api = useApi();
     const recipeId = +params.recipe_id;
 
@@ -32,16 +33,22 @@ export default function DialogShopping({ open, onClose, recipe }) {
     }, []);
 
     const handleCopyToClipboard = () => {
+        if (!shoppingList) {
+            return;
+        }
         try {
             copy(shoppingList);
-            alert("Contenu copié dans le presse-papiers !");
+            setNotification("Contenu copié dans le presse-papiers !");
         } catch (error) {
             console.error('Erreur lors de la copie dans le presse-papiers :', error);
-            alert("Erreur lors de la copie dans le presse-papiers. Veuillez réessayer.");
+            setNotification("Erreur lors de la copie dans le presse-papiers. Veuillez réessayer.");
         }
     };
 
     const handleShareOnSocialMedia = () => {
+        if (!shoppingList || !title) {
+            return;
+        }
         const shareUrl = encodeURIComponent(window.location.href);
         const shareTitle = encodeURIComponent(title);
         const shareDescription = encodeURIComponent(shoppingList);
@@ -51,6 +58,9 @@ export default function DialogShopping({ open, onClose, recipe }) {
     };
 
     const handleSendByEmail = () => {
+        if (!shoppingList || !title) {
+            return;
+        }
         window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(shoppingList)}`;
     };
 
@@ -82,51 +92,61 @@ export default function DialogShopping({ open, onClose, recipe }) {
     }
 
     return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-        >
-            <DialogTitle id="alert-dialog-title" className="margin-y-30">
-                {title}
-            </DialogTitle>
-            <DialogContent>
-                <div className="flex flex-row margin-y-20 gap-20">
-                    <TextField
-                        size="small"
-                        variant="standard"
-                        type="number"
-                        label="Nombre de portions"
-                        value={platesDefined || ''}
-                        onChange={handlePortionsChange}
-                    />
-                    <Button variant="contained" size="small" onClick={() => searchShoppingList()}>
-                        Générer la liste
-                    </Button>
-                </div>
-                <DialogContentText id="alert-dialog-description">
-                    {loading && <CircularProgress />}
-                    {shoppingList != null ? (
-                        parse(shoppingList)
-                    ) : null}
-                    {error !== null && (
-                        <Typography color="error">{error}</Typography>
-                    )}
-                </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-                <Button onClick={handleCopyToClipboard}>
-                    <ContentPasteOutlinedIcon />
-                </Button>
-                <Button onClick={handleShareOnSocialMedia}>
-                    <IosShareOutlinedIcon />
-                </Button>
-                <Button onClick={handleSendByEmail}>
-                    <EmailOutlinedIcon />
-                </Button>
-                <Button onClick={onClose}>Fermer</Button>
-            </DialogActions>
-        </Dialog>
+        <>
+            <Dialog
+                open={open}
+                onClose={onClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title" className="margin-y-30">
+                    {title}
+                </DialogTitle>
+                <DialogContent>
+                    <div className="flex flex-row margin-y-20 gap-20">
+                        <TextField
+                            size="small"
+                            variant="standard"
+                            type="number"
+                            label="Nombre de portions"
+                            value={platesDefined || ''}
+                            onChange={handlePortionsChange}
+                        />
+                        <Button variant="contained" size="small" onClick={() => searchShoppingList()}>
+                            Générer la liste
+                        </Button>
+                    </div>
+                    <DialogContentText id="alert-dialog-description">
+                        {loading && <CircularProgress />}
+                        {shoppingList != null ? (
+                            parse(shoppingList)
+                        ) : null}
+                        {error !== null && (
+                            <Typography color="error">{error}</Typography>
+                        )}
+                    </DialogContentText>
+                </DialogContent>
+                {shoppingList != null && (
+                    <DialogActions>
+                        <Button onClick={handleCopyToClipboard}>
+                            <ContentPasteOutlinedIcon />
+                        </Button>
+                        <Button onClick={handleShareOnSocialMedia}>
+                            <IosShareOutlinedIcon />
+                        </Button>
+                        <Button onClick={handleSendByEmail}>
+                            <EmailOutlinedIcon />
+                        </Button>
+                        <Button onClick={onClose}>Fermer</Button>
+                    </DialogActions>
+                )}
+            </Dialog>
+            <Snackbar
+                open={notification !== null}
+                autoHideDuration={5000}
+                onClose={() => setNotification(null)}
+                message={notification}
+            />
+        </>
     );
 }
