@@ -17,11 +17,14 @@ import {useEffect, useState} from "react";
 import {FavoriteRounded} from "@mui/icons-material";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';
 import {useRouter} from "next/navigation";
+import SearchInput from "@/app/resources/components/SearchInput";
+import AudioSearch from "@/app/resources/components/AudioSearch";
 
 export default function Header() {
     const [menuOpened, setMenuOpened] = useState(false);
     const [tokenData, setTokenData] = useState<JWTToken|false>(false);
     const router = useRouter();
+    const [transcript, setTranscript] = useState<string>('');
 
     const allMenuItems: MenuItem[] = [
         {text: 'Accueil', link: '/', icon: <HomeIcon/>},
@@ -53,6 +56,12 @@ export default function Header() {
         setMenuOpened(false);
     }
 
+    const handleSearchKeyPress = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            router.push('/search?characters=' + JSON.stringify((event.target as HTMLInputElement).value));
+        }
+    };
+
     useEffect(() => {
         setTokenData(decodeToken());
     }, []);
@@ -78,7 +87,8 @@ export default function Header() {
                         <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             CuisineConnect
                         </Typography>
-
+                        <AudioSearch onTranscriptChange={setTranscript}/>
+                        <SearchInput onKeyPress={handleSearchKeyPress} value={transcript}/>
                         {tokenData ?
                             <Button color="inherit" onClick={() => removeToken()}>Déconnexion</Button> :
                             <Button color="inherit" href="/login">Connexion</Button>

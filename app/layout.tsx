@@ -11,7 +11,7 @@ const inter = Inter({subsets: ['latin']})
 
 export const metadata: Metadata = {
     title: 'CuisineConnect | Des recettes de cuisine totalement toqués',
-    description: 'Site de recettes de cuisine en tous genres, pour tous les goûts et toutes les occasions, avec IA.',
+    description: 'Recherche tes recettes de cuisine préférées.',
 }
 
 export default function RootLayout({

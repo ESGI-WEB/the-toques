@@ -21,7 +21,7 @@ export default function RecipeLike(
     }
 ) {
     const api = useApi();
-    const [isLiked, setIsLiked] = useState<boolean>(recipe.isLiked);
+    const [isLiked, setIsLiked] = useState<boolean>(recipe.isLiked ?? false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const toggleLike = (event: any) => {

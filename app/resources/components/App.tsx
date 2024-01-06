@@ -1,5 +1,6 @@
 "use client";
 
+import 'regenerator-runtime/runtime';
 import {ThemeProvider} from "@mui/system";
 import {theme} from "@/app/resources/theaming";
 import Header from "@/app/resources/components/Header";

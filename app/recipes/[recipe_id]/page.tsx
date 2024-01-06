@@ -18,6 +18,9 @@ import RecipeDelete from "@/app/resources/components/RecipeDelete";
 import RecipeCard from "@/app/resources/components/RecipeCard";
 import SentimentDissatisfiedIcon from '@mui/icons-material/SentimentDissatisfied';
 import Image from "next/image";
+import Button from "@mui/material/Button";
+import DialogShopping from "@/app/resources/components/DialogShopping";
+import parse from 'html-react-parser';
 
 export default function Recipe() {
     const params = useParams();
@@ -25,12 +28,23 @@ export default function Recipe() {
     const [recipe, setRecipe] = useState<Recipe | null>(null);
     const [recommendations, setRecommendations] = useState<Recipe[]|null>(null);
     const [marksWithText, setMarksWithText] = useState<Mark[]>([])
-    const [sides, setSides] = useState<string[]|null>(null);
+    const [sides, setSides] = useState<string|null>(null);
+    const [openDialog, setOpenDialog] = useState(false);
     const api = useApi();
+
+    const handleClickOpenDialog = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    }
 
     const setUpRecipe = (recipe: Recipe) => {
         setRecipe(recipe);
-        setMarksWithText(recipe.marks.filter(mark => String(mark.content).trim().length > 0))
+        if (recipe?.marks) {
+            setMarksWithText(recipe.marks.filter(mark => String(mark.content).trim().length > 0))
+        }
     }
 
     useEffect(() => {
@@ -53,6 +67,8 @@ export default function Recipe() {
                     <div>
                         <RecipeLike recipe={recipe}/>
                         <RecipeDelete recipe={recipe}/>
+                        <Button onClick={handleClickOpenDialog} variant="outlined">Créer liste de courses</Button>
+                        <DialogShopping open={openDialog} onClose={handleCloseDialog} recipe={recipe} />
                     </div>
                 </div>
                 <div className="flex gap-10 flex-items-center">
@@ -65,7 +81,10 @@ export default function Recipe() {
                     <Image src={recipe.image} alt={recipe.title} fill/>
                 </div>
                 <div className='ingredient-list'>
-                    <Typography variant="h2">Ingredients</Typography>
+                    <div>
+                        <Typography variant="h2">Ingrédients</Typography>
+                        <Typography variant="h6">Pour {recipe.plates} parts</Typography>
+                    </div>
                     <IngredientList recipe={recipe}/>
                 </div>
             </div>
@@ -74,7 +93,7 @@ export default function Recipe() {
             <div>
                 <Typography variant="h2">Etapes de la recette</Typography>
                 <div className="flex flex-column gap-30 margin-top-20">
-                    {recipe.steps.map((step, index) => (
+                    {recipe?.steps && recipe.steps.map((step, index) => (
                         <div className="flex flex-column gap-10" key={step.id}>
                             <Typography variant="h6">Etape n°{index + 1} : {step.name}</Typography>
                             <Typography>{step.description}</Typography>
@@ -87,14 +106,14 @@ export default function Recipe() {
                             <Typography>Nous recherchons les meilleurs accompagnements pour cette recette...</Typography>
                         </div>}
                         {sides !== null &&
-                            <Typography dangerouslySetInnerHTML={{__html: sides}}></Typography>
+                            <Typography>{parse(sides)}</Typography>
                         }
                     </div>
                 </div>
             </div>
 
             <div>
-                <Typography variant="h2" gutterBottom>Recommendations similaires</Typography>
+                <Typography variant="h2" gutterBottom>Recommandations similaires</Typography>
                 {recommendations === null && <div className="flex flex-center gap-20 flex-column">
                     <CircularProgress/>
                     <Typography>Nous recherchons les meilleurs recettes correspondantes</Typography>
@@ -116,7 +135,7 @@ export default function Recipe() {
                     onCreated={(mark: Mark) => {
                         setUpRecipe({
                             ...recipe,
-                            marks: [mark, ...recipe.marks],
+                            marks: [mark, ...(recipe?.marks ?? [])],
                         });
                     }}
                 />

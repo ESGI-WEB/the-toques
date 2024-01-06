@@ -54,6 +54,10 @@ body {
     justify-content: center;
 }
 
+.flex-justify-space-between {
+    justify-content: space-between;
+}
+
 .flex-items-baseline {
     align-items: baseline;
 }
@@ -126,6 +130,11 @@ body {
     margin-bottom: 40px;
 }
 
+.margin-y-20 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 .margin-auto {
     margin: auto;
 }
@@ -154,8 +163,16 @@ body {
     right: 0;
 }
 
+.right-10 {
+    right: 10px;
+}
+
 .top-0 {
     top: 0;
+}
+
+.top-10 {
+    top: 10px;
 }
 
 .full-v-height {
@@ -230,4 +247,24 @@ body {
 
 .col-6 {
     width: 50%;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+@keyframes zoomIn {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.zoom-infinite {
+    animation: zoomIn 1s infinite;
 }
