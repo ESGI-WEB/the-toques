@@ -11,13 +11,16 @@ export async function GET(request: Request) {
     const { readable, writable } = new TransformStream();
     const writer = writable.getWriter();
 
+    const search = new URL(request.url).searchParams;
+    const characters = search.get('characters') ?? '';
+
     const sendEvent = (data: object) => {
         writer.write(`data: ${JSON.stringify(data)}\n\n`);
     };
 
     sendEvent({ message: 'received' });
 
-    setTimeout(() => streamRecipes(writer, request, sendEvent));
+    setTimeout(() => streamRecipes(writer, request, sendEvent, characters));
 
     return new Response(readable, {
         headers: {
@@ -28,11 +31,8 @@ export async function GET(request: Request) {
     });
 }
 
-const streamRecipes = async (writer: WritableStreamDefaultWriter, request: Request, sendEvent: any) => {
+const streamRecipes = async (writer: WritableStreamDefaultWriter, request: Request, sendEvent: any, characters = '' ) => {
     const prisma = new PrismaClient();
-
-    const search = new URL(request.url).searchParams;
-    const characters = search.get('characters') ?? '';
 
     const user = await isAuthenticated(request);
 
