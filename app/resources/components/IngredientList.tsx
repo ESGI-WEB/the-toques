@@ -24,7 +24,7 @@ export default function IngredientList({recipe}: { recipe: Recipe}) {
             width: 250,
         }}>
             <List>
-                {recipe.ingredients.map((ingredient, index) => (
+                {(recipe.ingredients ?? []).map((ingredient, index) => (
                     <ListItem key={ingredient.id} sx={{
                         padding: 0,
                     }}>

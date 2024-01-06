@@ -17,7 +17,7 @@ interface ToggleProps {
 }
 
 export default function ToggleElements({ title, filters = [], onToggleChange }: ToggleProps) {
-    const initialState = filters.reduce((acc, filter) => {
+    const initialState = filters.reduce((acc: Record<string, boolean>, filter) => {
         acc[filter.name] = false;
         return acc;
     }, {});

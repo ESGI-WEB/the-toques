@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import Box from "@mui/material/Box";
 
 export default function SearchInput({
-    onKeyPress,
-    value,
+    onKeyPress = (event: React.KeyboardEvent) => { },
+    value = '',
 }) {
     const [searchValue, setSearchValue] = useState<string>('');
     useEffect(() => {
