@@ -3,11 +3,11 @@ import * as React from 'react';
 import {useApi} from "@/app/resources/services/useApi";
 import {useEffect, useState} from "react";
 import {useSearchParams} from "next/navigation";
-import {Recipe} from "@prisma/client";
 import Typography from "@mui/material/Typography";
 import {CircularProgress} from "@mui/material";
 import RecipeCard from "@/app/resources/components/RecipeCard";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
+import {Recipe} from "@/app/resources/models/recipe.model";
 
 export default function Search() {
     const searchParams = useSearchParams();

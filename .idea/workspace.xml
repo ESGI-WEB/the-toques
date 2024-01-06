@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="208b52aa-fd32-4235-af3b-9ea0934ce2ea" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/components/IngredientList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/components/IngredientList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/components/SearchInput.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/components/SearchInput.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/resources/components/ToggleElements.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/resources/components/ToggleElements.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/search/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/search/page.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
