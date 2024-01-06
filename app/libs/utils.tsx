@@ -71,7 +71,8 @@ export const uploadToDropbox = async (data: Buffer, fileName: string) => {
 
         return shareResponse.url.replace('www.dropbox.com', 'dl.dropboxusercontent.com');
     } catch (error: any) {
-        console.error('Error uploading file to Dropbox:', error.response.data);
+        console.error('Error uploading file to Dropbox');
+        console.error(error);
         throw error;
     }
 };
