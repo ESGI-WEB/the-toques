@@ -15,8 +15,13 @@ import {CircularProgress, Snackbar, TextField} from '@mui/material';
 import {useApi} from "@/app/resources/services/useApi";
 import {useParams} from "next/navigation";
 import Typography from "@mui/material/Typography";
+import {Recipe} from "@/app/resources/models/recipe.model";
 
-export default function DialogShopping({ open, onClose, recipe }) {
+export default function DialogShopping({
+    open,
+    onClose,
+    recipe
+}: { open: boolean, onClose: () => void, recipe: Recipe}) {
     const params = useParams();
     const [platesDefined, setPlatesDefined] = useState<number|null>(recipe.plates);
     const [title, setTitle] = useState<string|null>(null);
