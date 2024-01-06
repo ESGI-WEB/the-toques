@@ -1,4 +1,3 @@
-import {NextResponse} from "next/server";
 import {PrismaClient} from "@prisma/client";
 import {IChatMessage} from "@/app/resources/models/message";
 import OpenAI from "openai";
@@ -8,10 +7,32 @@ import {
 } from "@/prisma/utils";
 import {isAuthenticated} from "@/app/libs/auth";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+
+    const sendEvent = (data: object) => {
+        writer.write(`data: ${JSON.stringify(data)}\n\n`);
+    };
+
+    sendEvent({ message: 'received' });
+
+    setTimeout(() => streamRecipes(writer, request, sendEvent));
+
+    return new Response(readable, {
+        headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+        },
+    });
+}
+
+const streamRecipes = async (writer: WritableStreamDefaultWriter, request: Request, sendEvent: any) => {
     const prisma = new PrismaClient();
 
-    const { characters } = await request.json();
+    const search = new URL(request.url).searchParams;
+    const characters = search.get('characters') ?? '';
 
     const user = await isAuthenticated(request);
 
@@ -28,16 +49,21 @@ export async function POST(request: Request) {
         take: 100,
     });
 
+    if (!recipes) {
+        await prisma.$disconnect();
+        await sendEvent([]);
+        await writer.close();
+        return;
+    }
+
     const systemMessage: IChatMessage = {
         role: 'system',
         content:
-            `Imaginez que vous disposez d'une liste de recettes avec les informations suivantes : ` +
-            `${recipes.map(recipe => `[id: ${recipe.id}, titre: ${recipe.title}], ingrédients: ${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}]`).join(', ')}. ` +
-            `Ensuite, recherchez et affichez les IDs des recettes contenant : ${characters} parmi ses ingrédients.` +
-            `Le résultat final doit être un tableau JSON contenant uniquement les valeurs des IDs des recettes, triées par pertinence, ` +
-            `avec les recettes les plus pertinentes en premier. ` +
-            `Si aucune recette ne contient ces ingrédients, le programme doit renvoyer un tableau vide []. ` +
-            `La réponse finale doit être un tableau sous la forme [number, number, ...].`
+            `Avec cette liste de recettes : ` +
+            `Recherche pour moi les id des recettes correspondant à : ${characters}.` +
+            `Renvoi un tableau JSON contenant uniquement les id des recettes correspondantes, triées par pertinence ou un tableau vide.` +
+            `Ta réponse doit avoir la forme [1, 2, 3, ...] uniquement sans rien d'autre` +
+            `${recipes.map(recipe => `[id: ${recipe.id}, titre: ${recipe.title}], ingrédients: ${recipe.ingredients.map(ingredient => ingredient.name).join(', ')}]`).join(', ')}. `
     };
 
     if (user) {
@@ -64,7 +90,9 @@ export async function POST(request: Request) {
 
     if (!recipeIds || !Array.isArray(recipeIds)) {
         await prisma.$disconnect();
-        return new NextResponse(JSON.stringify([]), {status: 200});
+        await sendEvent([]);
+        await writer.close();
+        return;
     }
 
     let recipesSelected = [];
@@ -81,6 +109,8 @@ export async function POST(request: Request) {
         recipesSelected = await getRecipesWithIsLiked(recipesSelected, prisma, user.id);
     }
 
+    sendEvent(recipesSelected);
+
     await prisma.$disconnect();
-    return NextResponse.json(recipesSelected, {status: 200});
+    await writer.close();
 }

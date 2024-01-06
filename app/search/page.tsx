@@ -16,26 +16,41 @@ export default function Search() {
     const [recipes, setRecipes] = useState<Recipe[] | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    const setUpRecipes = (recipes: Recipe[]) => {
-        setRecipes(recipes);
-    }
+    const [eventSource, setEventSource] = useState<EventSource|null>(null);
 
     useEffect(() => {
+        setRecipes(null)
         setError(false);
         setLoading(true);
-        api(`search`, {
-            method: 'POST',
-            body: JSON.stringify({
-                "characters" : charactersForSearch
-            }),
-        }).then((res) => {
-            setUpRecipes(res);
-        }).catch((err) => {
-            console.error(err);
-            setError(err.error?.[0]?.message ?? "Une erreur est survenue lors de la recherche.");
-        }).finally(() => {
+
+        const source = new EventSource('/api/search?characters=' + charactersForSearch);
+        setEventSource(source);
+
+        // vercel issue, ia too long to response, it would be great to display
+        // a loading indicator or show recipe as they are chosen by ia but not enough time
+        source.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.message === 'received') {
+                return;
+            }
+            setRecipes(data);
             setLoading(false);
-        });
+            source.close();
+        };
+
+        source.onerror = (error) => {
+            console.error('Error with SSE:', error);
+            source.close();
+            setError(true);
+            setLoading(false);
+        };
+
+        return () => {
+            if (source) {
+                source.close();
+                setEventSource(null);
+            }
+        };
     }, [charactersForSearch]);
 
     return (
