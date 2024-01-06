@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import KeyboardVoiceRoundedIcon from '@mui/icons-material/KeyboardVoiceRounded';
-import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useRouter } from "next/navigation";
 import MicOffIcon from '@mui/icons-material/MicOff';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 export default function AudioSearch({
     onTranscriptChange = (transcript: string) => { },
