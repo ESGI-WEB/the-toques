@@ -18,9 +18,12 @@ export default function Recipes() {
     const [areCaloriesSorted, setAreCaloriesSorted] = useState(false);
 
     useEffect(() => {
-        api('recipes').then(setRecipes);
-        api('recipes/season').then(setSeasonRecipes);
-    }, []);
+        const params = areCaloriesSorted ? '?calories=asc' : '';
+        setRecipes(null);
+        setSeasonRecipes(null);
+        api('recipes' + params).then(setRecipes);
+        api('recipes/season' + params).then(setSeasonRecipes);
+    }, [areCaloriesSorted]);
 
     const filters: Filter[] = [
         {
@@ -32,36 +35,6 @@ export default function Recipes() {
     const handleToggleChange = (name: string, checked: boolean) => {
         if (name === 'calories') {
             setAreCaloriesSorted(checked);
-            if (recipes !== null) {
-                setRecipes(recipes.sort((a, b) => {
-                    if (checked) {
-                        if (a.calories < b.calories) {
-                            return -1;
-                        }
-                        return 0;
-                    } else {
-                        if (a.id < b.id) {
-                            return -1;
-                        }
-                        return 0;
-                    }
-                }));
-            }
-            if (seasonRecipes != null) {
-                setSeasonRecipes(seasonRecipes?.sort((a, b) => {
-                    if (checked) {
-                        if (a.calories < b.calories) {
-                            return -1;
-                        }
-                        return 0;
-                    } else {
-                        if (a.id < b.id) {
-                            return -1;
-                        }
-                        return 0;
-                    }
-                }));
-            }
         }
     }
 

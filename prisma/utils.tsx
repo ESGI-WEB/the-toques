@@ -71,7 +71,7 @@ export async function getCaloriesOfRecipe(title: string, ingredients: Ingredient
     const systemMessage = {
         role: 'system',
         content: `Calcule approximativement le nombre de calories pour la recette "${title}" en utilisant les ingrédients suivants : ${ingredients.map(ingredient => `${ingredient.quantity} ${ingredient.name}`).join(', ')}. `+
-            `Renvoie uniquement la valeur estimée des calories pour cette recette sous forme d'un nombre entier (format JSON). `+
+            `Renvoie uniquement la valeur estimée des calories pour cette recette sous forme d'un nombre entier (format JSON que peut encoder un JSON.parse). `+
             `Assure-toi que la sortie est strictement le nombre estimé de calories, par exemple, 500, et exclut tout texte ou phrase supplémentaire.`
     };
 

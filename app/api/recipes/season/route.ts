@@ -65,12 +65,22 @@ export async function GET(request: Request) {
     }
 
     let recipes = [];
+    let findManyArgs = {}
+    if (request.url.includes('calories=')) {
+        const order = request.url.includes('calories=asc') ? 'asc' : 'desc';
+        findManyArgs = {
+            orderBy: {
+                calories: order,
+            }
+        }
+    }
     recipes = await prisma.recipe.findMany({
         where: {
             id: {
                 in: recipeIds.map(id => parseInt(id)),
             }
         },
+        ...findManyArgs,
     });
 
     recipes = await getRecipesWithAvg(recipes, prisma);
