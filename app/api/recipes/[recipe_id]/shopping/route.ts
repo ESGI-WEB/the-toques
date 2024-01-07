@@ -27,7 +27,8 @@ export async function POST(request: Request, {params}: { params: { recipe_id: st
         role: 'system',
         content: `En tenant compte de la recette "${recipe.title}" qui nécessite les ingrédients suivants : ` +
             `"${recipe.ingredients.map(ingredient => `${ingredient.quantity} ${ingredient.name}`).join(', ')}", ` +
-            `et qui est prévue pour ${recipe.plates} portions, génère une liste de courses des ingrédients à acheter adaptée pour ${numberPlates} portions. ` +
+            `et qui est prévue pour ${recipe.plates} portions, génère une liste de courses des ingrédients à acheter adaptée pour ${numberPlates} portions en faisant un simple produit en croix. ` +
+            `Fait le calcul suivant ${numberPlates} x quantité de l'ingrédient / ${recipe.plates}. Si ${numberPlates} == ${recipe.plates} alors renvoi juste la quantité de base.` +
             `Assure-toi que la sortie est strictement la liste de courses, et exclut tout texte ou phrase supplémentaire. `+
             `Pour les sauts de lignes, utilise &lt;br&gt;, pour les listes, utilise &lt;ul&gt; et &lt;li&gt;, et &lt;strong&gt; pour le gras.`
     };

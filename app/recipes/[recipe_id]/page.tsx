@@ -2,6 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {
+    Box,
     CircularProgress,
     Container, Rating,
     Typography
@@ -60,7 +61,7 @@ export default function Recipe() {
     }
 
     return (
-        <Container className="recipe-page flex flex-column gap-30">
+        <Box className="recipe-page flex flex-column gap-30">
             <div className="flex flex-wrap gap-20 align-items-center flex-space-between">
                 <div className="flex gap-10">
                     <Typography variant="h1">{recipe.title}</Typography>
@@ -143,6 +144,6 @@ export default function Recipe() {
                     <MarkCard mark={mark} key={mark.id}/>
                 ))}
             </div>
-        </Container>
+        </Box>
     );
 }

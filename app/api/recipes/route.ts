@@ -48,7 +48,7 @@ export async function POST(request: Request) {
         fillInRecipeCalories(recipe);
 
         await prisma.$disconnect();
-        return NextResponse.json(recipe, {status: 200});
+        return NextResponse.json(recipe, {status: 201});
     } catch (error) {
         await prisma.$disconnect();
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
@@ -61,24 +61,24 @@ export async function POST(request: Request) {
 
 const fillInRecipeCalories = async (recipe: any, times = 0) => {
     setTimeout(async () => {
-        const prisma = new PrismaClient();
         let calories = null;
 
         try {
             calories = await getCaloriesOfRecipe(recipe.title, recipe.ingredients);
         } catch (e) {
-
+            console.error(e);
+            return fillInRecipeCalories(recipe, times + 1);
         }
 
-        if (!isFinite(calories)) {
+        if (!calories || !isFinite(calories)) {
             if (times < 3) {
-                await prisma.$disconnect();
                 return fillInRecipeCalories(recipe, times + 1);
             } else {
                 calories = 500; // default to 500 calories
             }
         }
 
+        const prisma = new PrismaClient();
         await prisma.recipe.update({
             where: {
                 id: recipe.id,
@@ -88,7 +88,7 @@ const fillInRecipeCalories = async (recipe: any, times = 0) => {
             }
         });
         await prisma.$disconnect();
-    }, 2000);
+    }, 100);
 }
 
 export async function GET(request: Request) {

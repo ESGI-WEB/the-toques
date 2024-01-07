@@ -80,7 +80,8 @@ export async function getCaloriesOfRecipe(title: string, ingredients: Ingredient
         messages: [systemMessage as any],
     });
 
-    return JSON.parse(completion.choices[0].message.content ?? "");
+    // @ts-ignore
+    return completion.choices[0].message.content ? parseInt(completion.choices[0].message.content.match(/\d+/)[0]) : null;
 }
 
 export const userSelect = {
