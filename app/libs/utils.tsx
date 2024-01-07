@@ -31,20 +31,20 @@ export function getCurrentSeason() {
 
 export const UPLOAD_URL = 'https://content.dropboxapi.com/2/files/upload';
 export const SHARE_URL = 'https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings';
+export const TOKEN_URL = 'https://api.dropboxapi.com/oauth2/token';
 export const uploadToDropbox = async (data: Buffer, fileName: string) => {
-    const secret = process.env.DROPBOX_KEY;
-    const headers = {
-        'Content-Type': 'application/octet-stream',
-        'Authorization': `Bearer ${secret}`,
-        'Dropbox-API-Arg': JSON.stringify({
-            path: `/storage/${fileName}`,
-            mode: 'add',
-            autorename: true,
-            mute: false,
-        }),
-    };
-
     try {
+        const secret = await getAccessTokenFromRefreshToken();
+        const headers = {
+            'Content-Type': 'application/octet-stream',
+            'Authorization': `Bearer ${secret}`,
+            'Dropbox-API-Arg': JSON.stringify({
+                path: `/storage/${fileName}`,
+                mode: 'add',
+                autorename: true,
+                mute: false,
+            }),
+        };
         const response = await (await fetch(UPLOAD_URL, {
             method: 'POST',
             headers,
@@ -76,3 +76,23 @@ export const uploadToDropbox = async (data: Buffer, fileName: string) => {
         throw error;
     }
 };
+
+const getAccessTokenFromRefreshToken = async () => {
+    const requestBody = `grant_type=refresh_token&refresh_token=${process.env.DROPBOX_REFRESH_TOKEN}&client_id=${process.env.DROPBOX_CLIENT_ID}&client_secret=${process.env.DROPBOX_CLIENT_SECRET}`;
+
+    const response = await fetch(TOKEN_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: requestBody,
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error refreshing access token: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.access_token;
+};
+

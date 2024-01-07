@@ -17,7 +17,6 @@ export async function POST(request: Request) {
     }
 
     const prisma = new PrismaClient();
-    await prisma.$disconnect();
 
     try {
         const {title, steps, ingredients, image} = value;
@@ -51,12 +50,11 @@ export async function POST(request: Request) {
         await prisma.$disconnect();
         return NextResponse.json(recipe, {status: 200});
     } catch (error) {
+        await prisma.$disconnect();
         if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            await prisma.$disconnect();
             return NextResponse.json({error: error.message}, {status: 422});
         }
         console.error(error);
-        await prisma.$disconnect();
         return NextResponse.json({}, {status: 500});
     }
 }

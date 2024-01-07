@@ -55,6 +55,7 @@ export async function POST(request: Request) {
 
     const data = await request.json();
     if (!data.message) {
+        await prisma.$disconnect();
         return new Response('Message is required', {status: 400});
     }
 
@@ -75,5 +76,6 @@ export async function POST(request: Request) {
     const answer = completion.choices[0].message;
     messages.push(answer);
 
+    await prisma.$disconnect();
     return new NextResponse(JSON.stringify(answer));
 }
