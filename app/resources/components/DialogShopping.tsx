@@ -42,7 +42,7 @@ export default function DialogShopping({
             return;
         }
         try {
-            copy(shoppingList);
+            copy(formatListStripHtml(shoppingList));
             setNotification("Contenu copié dans le presse-papiers !");
         } catch (error) {
             console.error('Erreur lors de la copie dans le presse-papiers :', error);
@@ -54,20 +54,26 @@ export default function DialogShopping({
         if (!shoppingList || !title) {
             return;
         }
-        const shareUrl = encodeURIComponent(window.location.href);
-        const shareTitle = encodeURIComponent(title);
-        const shareDescription = encodeURIComponent(shoppingList);
-        const facebookShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}&title=${shareTitle}&description=${shareDescription}`;
 
-        window.open(facebookShareUrl, '_blank');
+        navigator.share({
+            title: title,
+            text: formatListStripHtml(shoppingList),
+            url: window.location.href
+        });
     };
 
     const handleSendByEmail = () => {
         if (!shoppingList || !title) {
             return;
         }
-        window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(shoppingList)}`;
+        window.location.href = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(formatListStripHtml(shoppingList))}`;
     };
+
+    const formatListStripHtml = (list: string) => {
+        return list.replace(/<li>/g, '- ')
+            .replace(/<\/li>/g, '\n')
+            .replace(/<[^>]*>/g, '');
+    }
 
     const handlePortionsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPlatesDefined(Number(event.target.value));
@@ -133,12 +139,16 @@ export default function DialogShopping({
                 </DialogContent>
                 {shoppingList != null && (
                     <DialogActions>
-                        <Button onClick={handleCopyToClipboard}>
-                            <ContentPasteOutlinedIcon />
-                        </Button>
-                        <Button onClick={handleShareOnSocialMedia}>
-                            <IosShareOutlinedIcon />
-                        </Button>
+                        {navigator.clipboard &&
+                            <Button onClick={handleCopyToClipboard}>
+                                <ContentPasteOutlinedIcon/>
+                            </Button>
+                        }
+                        {navigator['share'] &&
+                            <Button onClick={handleShareOnSocialMedia}>
+                                <IosShareOutlinedIcon/>
+                            </Button>
+                        }
                         <Button onClick={handleSendByEmail}>
                             <EmailOutlinedIcon />
                         </Button>
