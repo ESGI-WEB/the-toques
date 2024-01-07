@@ -28,6 +28,7 @@ export async function POST(request: Request) {
     const isPasswordMatched = bcrypt.compareSync(password, user.password);
 
     if (!isPasswordMatched) {
+        await prisma.$disconnect();
         return NextResponse.json({}, {status: 401});
     }
 

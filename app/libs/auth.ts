@@ -47,13 +47,16 @@ export async function isAdmin(request: any): Promise<false|UserPayload> {
     }) as User|null;
 
     if (!user) {
+        await prisma.$disconnect();
         return false;
     }
 
     if (user.role !== "ADMIN") {
+        await prisma.$disconnect();
         return false;
     }
 
+    await prisma.$disconnect();
     return payload;
 }
 
