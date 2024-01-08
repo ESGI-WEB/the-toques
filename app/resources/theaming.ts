@@ -63,6 +63,14 @@ export const theme = createTheme({
                     color: teal[500],
                 }
             }
+        },
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    backgroundColor: teal[500],
+                    color: '#fff',
+                }
+            }
         }
     }
 });
