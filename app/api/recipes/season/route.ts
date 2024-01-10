@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
     const systemMessage: IChatMessage = {
         role: 'system',
-        content: `Parmi les recettes suivantes, choisis-en au minimum 4 et au maximum 15 qui sont plutôt de la saison : "${season.name}" en France métropolitaine. 
+        content: `Parmi les recettes suivantes, choisis-en au minimum 4 et au maximum 6 qui sont plutôt de la saison : "${season.name}" en France métropolitaine. 
             Base-toi sur les ingrédients de chaque recette et leur nom, qui doit être en lien avec la saison donnée.
             Par exemple, une soupe de butternut sera adaptée pour l'automne alors que des épinards sont plutôt d'été.
             Retourne les id des recettes choisies dans un tableau contenant uniquement la valeur du id en JSON de la forme [number, number, ...], les plus correspondantes devront apparaître en premier dans le tableau.
